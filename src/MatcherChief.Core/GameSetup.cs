@@ -13,7 +13,7 @@ namespace MatcherChief.Core
             { GameFormat.EightPlayerFFA, new [] { GameMode.Slayer, GameMode.ZoneControl, GameMode.AssetDenial, GameMode.ActionSack, GameMode.Swat, GameMode.Snipers } },
             { GameFormat.TwelvePlayerFFA, new [] { GameMode.Infection } },
             { GameFormat.EightVersusEight, new [] { GameMode.Slayer, GameMode.FlagAndBomb, GameMode.ZoneControl, GameMode.AssetDenial, GameMode.ActionSack, GameMode.Snipers, GameMode.Heavies } },
-            { GameFormat.Firefight, new [] { GameMode.FirefightArcade, GameMode.FirefightLimited } },
+            { GameFormat.Firefight, new [] { GameMode.FirefightArcade, GameMode.FirefightLimited } }
         };
     }
 }
