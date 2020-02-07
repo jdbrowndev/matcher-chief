@@ -15,5 +15,16 @@ namespace MatcherChief.Core
             { GameFormat.EightVersusEight, new [] { GameMode.Slayer, GameMode.FlagAndBomb, GameMode.ZoneControl, GameMode.AssetDenial, GameMode.ActionSack, GameMode.Snipers, GameMode.Heavies } },
             { GameFormat.Firefight, new [] { GameMode.FirefightArcade, GameMode.FirefightLimited } }
         };
+
+        public static readonly Dictionary<GameFormat, int> GameFormatsToPlayersRequired = new Dictionary<GameFormat, int>
+        {
+            { GameFormat.OneVersusOne, 2 },
+            { GameFormat.TwoVersusTwo, 4 },
+            { GameFormat.FourVersusFour, 8 },
+            { GameFormat.EightPlayerFFA, 8 },
+            { GameFormat.TwelvePlayerFFA, 12 },
+            { GameFormat.EightVersusEight, 16 },
+            { GameFormat.Firefight, 4 }
+        };
     }
 }
