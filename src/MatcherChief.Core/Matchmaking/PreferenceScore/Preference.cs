@@ -13,9 +13,10 @@ namespace MatcherChief.Core.Matchmaking.PreferenceScore
         public GameTitle Title { get; private set; }
         public GameMode Mode { get; private set; }
 
-        public bool Equals(Preference other)
+        public override bool Equals(object other)
         {
-            return Title == other.Title && Mode == other.Mode;
+            var pref = (Preference) other;
+            return Title == pref.Title && Mode == pref.Mode;
         }
 
         public override int GetHashCode()

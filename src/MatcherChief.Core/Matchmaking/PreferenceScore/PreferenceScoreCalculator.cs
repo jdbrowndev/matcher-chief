@@ -11,7 +11,7 @@ namespace MatcherChief.Core.Matchmaking.PreferenceScore
 
     public class PreferenceScoreCalculator : IPreferenceScoreCalculator
     {
-        private const int SECONDS_PER_SCORE_WEIGHT_INCREASE = 5;
+        public const int SECONDS_PER_SCORE_WEIGHT_INCREASE = 5;
 
         public Dictionary<Preference, int> GetScores(IEnumerable<MatchRequest> requests)
         {
@@ -28,7 +28,10 @@ namespace MatcherChief.Core.Matchmaking.PreferenceScore
                 var weight = 1 + now.Subtract(request.QueuedOn).Seconds / SECONDS_PER_SCORE_WEIGHT_INCREASE;
                 
                 foreach (var preference in preferences)
-                    scores[preference] += weight;
+                    if (scores.ContainsKey(preference))
+                        scores[preference] += weight;
+                    else
+                        scores.Add(preference, weight);
             }
 
             return scores;
