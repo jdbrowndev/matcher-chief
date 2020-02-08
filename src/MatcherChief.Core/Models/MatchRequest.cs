@@ -5,9 +5,9 @@ namespace MatcherChief.Core.Models
 {
     public class MatchRequest
     {
-        public GameFormat Format { get; set; }
+        public Player Player { get; set; }
         public IEnumerable<GameTitle> Titles { get; set; }
         public IEnumerable<GameMode> Modes { get; set; }
-        public DateTime CreatedOn { get; set; }
+        public DateTime QueuedOn { get; set; }
     }
 }
