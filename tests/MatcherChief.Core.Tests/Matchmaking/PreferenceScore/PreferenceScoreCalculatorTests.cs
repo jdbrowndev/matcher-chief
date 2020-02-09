@@ -7,7 +7,7 @@ namespace MatcherChief.Core.Tests.Matchmaking.PreferenceScore
 {
     public class PreferenceScoreCalculatorTests
     {
-        private PreferenceScoreCalculator _sut;
+        private readonly PreferenceScoreCalculator _sut;
 
         public PreferenceScoreCalculatorTests()
         {

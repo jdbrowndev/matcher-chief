@@ -28,9 +28,15 @@ namespace MatcherChief.Core.Matchmaking.PreferenceScore
 
             foreach (var preference in orderedPreferences)
             {
+                if (orderedRequests.Count < matchSize)
+                    break;
+
                 var requestGroup = new List<MatchRequest>();
                 for (var i = orderedRequests.Count - 1; i >= 0; i--)
                 {
+                    if (i + 1 + requestGroup.Count < matchSize)
+                        break;
+
                     var request = orderedRequests[i];
                     if (HasPreference(request, preference))
                     {
