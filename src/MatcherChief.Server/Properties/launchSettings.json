@@ -1,0 +1,12 @@
+﻿{
+  "profiles": {
+    "MatcherChief.Server": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:48689",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
