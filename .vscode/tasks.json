@@ -2,18 +2,6 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "build",
-                "${workspaceFolder}/tests/MatcherChief.Core.Tests/MatcherChief.Core.Tests.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
             "label": "publish",
             "command": "dotnet",
             "type": "process",
@@ -50,7 +38,6 @@
                 "kind": "build",
                 "isDefault": true
             },
-            "presentation": {},
             "problemMatcher": "$msCompile"
         }
     ]

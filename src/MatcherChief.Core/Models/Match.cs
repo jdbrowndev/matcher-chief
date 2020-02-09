@@ -4,9 +4,17 @@ namespace MatcherChief.Core.Models
 {
     public class Match
     {
-        public GameFormat Format { get; set; }
-        public GameTitle Title { get; set; }
-        public GameMode Mode { get; set; }
-        public IEnumerable<Player> Players { get; set; }
+        public Match(GameFormat format, GameTitle title, GameMode mode, IEnumerable<Player> players)
+        {
+            Format = format;
+            Title = title;
+            Mode = mode;
+            Players = players;
+        }
+
+        public GameFormat Format { get; private set; }
+        public GameTitle Title { get; private set; }
+        public GameMode Mode { get; private set; }
+        public IEnumerable<Player> Players { get; private set; }
     }
 }

@@ -30,13 +30,13 @@ namespace MatcherChief.Core.Tests.Matchmaking.PreferenceScore
             var scores = _sut.GetScores(new[] { request1, request2, request3 });
 
             Assert.Equal(7, scores.Count);
-            Assert.Equal(scores[new Preference(GameTitle.HaloReach, GameMode.Slayer)], 2);
-            Assert.Equal(scores[new Preference(GameTitle.HaloReach, GameMode.Swat)], 1);
-            Assert.Equal(scores[new Preference(GameTitle.HaloReach, GameMode.Snipers)], 1);
-            Assert.Equal(scores[new Preference(GameTitle.Halo2, GameMode.Slayer)], 1);
-            Assert.Equal(scores[new Preference(GameTitle.Halo2, GameMode.Snipers)], 1);
-            Assert.Equal(scores[new Preference(GameTitle.HaloReach, GameMode.AssetDenial)], 1);
-            Assert.Equal(scores[new Preference(GameTitle.HaloReach, GameMode.ActionSack)], 1);
+            Assert.Equal(2, scores[new Preference(GameTitle.HaloReach, GameMode.Slayer)]);
+            Assert.Equal(1, scores[new Preference(GameTitle.HaloReach, GameMode.Swat)]);
+            Assert.Equal(1, scores[new Preference(GameTitle.HaloReach, GameMode.Snipers)]);
+            Assert.Equal(1, scores[new Preference(GameTitle.Halo2, GameMode.Slayer)]);
+            Assert.Equal(1, scores[new Preference(GameTitle.Halo2, GameMode.Snipers)]);
+            Assert.Equal(1, scores[new Preference(GameTitle.HaloReach, GameMode.AssetDenial)]);
+            Assert.Equal(1, scores[new Preference(GameTitle.HaloReach, GameMode.ActionSack)]);
         }
 
         [Fact]
@@ -60,13 +60,13 @@ namespace MatcherChief.Core.Tests.Matchmaking.PreferenceScore
             var scores = _sut.GetScores(new[] { request1, request2, request3 });
 
             Assert.Equal(7, scores.Count);
-            Assert.Equal(scores[new Preference(GameTitle.HaloReach, GameMode.Slayer)], 3);
-            Assert.Equal(scores[new Preference(GameTitle.HaloReach, GameMode.Swat)], 1);
-            Assert.Equal(scores[new Preference(GameTitle.HaloReach, GameMode.Snipers)], 2);
-            Assert.Equal(scores[new Preference(GameTitle.Halo2, GameMode.Slayer)], 2);
-            Assert.Equal(scores[new Preference(GameTitle.Halo2, GameMode.Snipers)], 2);
-            Assert.Equal(scores[new Preference(GameTitle.HaloReach, GameMode.AssetDenial)], 3);
-            Assert.Equal(scores[new Preference(GameTitle.HaloReach, GameMode.ActionSack)], 3);
+            Assert.Equal(3, scores[new Preference(GameTitle.HaloReach, GameMode.Slayer)]);
+            Assert.Equal(1, scores[new Preference(GameTitle.HaloReach, GameMode.Swat)]);
+            Assert.Equal(2, scores[new Preference(GameTitle.HaloReach, GameMode.Snipers)]);
+            Assert.Equal(2, scores[new Preference(GameTitle.Halo2, GameMode.Slayer)]);
+            Assert.Equal(2, scores[new Preference(GameTitle.Halo2, GameMode.Snipers)]);
+            Assert.Equal(3, scores[new Preference(GameTitle.HaloReach, GameMode.AssetDenial)]);
+            Assert.Equal(3, scores[new Preference(GameTitle.HaloReach, GameMode.ActionSack)]);
         }
     }
 }
