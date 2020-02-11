@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using MatcherChief.Server.Queues;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace MatcherChief.Server
 {
@@ -14,6 +9,11 @@ namespace MatcherChief.Server
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IMatchmakingQueueListenerFactory, MatchmakingQueueListenerFactory>();
+            
+            services.AddSingleton<IQueueManager, QueueManager>();
+            services.AddSingleton<IOutboundQueueListener, OutboundQueueListener>();
+            services.AddHostedService<MatchmakingHostedService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

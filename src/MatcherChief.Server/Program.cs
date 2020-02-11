@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace MatcherChief.Server
 {
@@ -16,6 +10,7 @@ namespace MatcherChief.Server
             CreateHostBuilder(args).Build().Run();
         }
 
+        // TODO: break apart CreateDefaultBuilder since it has unnecessary configuration
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
