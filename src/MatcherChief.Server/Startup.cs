@@ -1,4 +1,5 @@
 using MatcherChief.Server.Queues;
+using MatcherChief.Server.WebSockets;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,7 +11,9 @@ namespace MatcherChief.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddTransient<IMatchmakingQueueListenerFactory, MatchmakingQueueListenerFactory>();
-            
+            services.AddTransient<IWebSocketRequestHandler, WebSocketRequestHandler>();
+            services.AddTransient<IWebSocketResponseHandler, WebSocketResponseHandler>();
+
             services.AddSingleton<IQueueManager, QueueManager>();
             services.AddSingleton<IOutboundQueueListener, OutboundQueueListener>();
             services.AddHostedService<MatchmakingHostedService>();
@@ -18,11 +21,7 @@ namespace MatcherChief.Server
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseRouting();
-
-            app.UseEndpoints(endpoints =>
-            {
-            });
+            app.UseMiddleware<WebSocketHandlerMiddleware>();
         }
     }
 }

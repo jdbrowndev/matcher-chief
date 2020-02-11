@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using MatcherChief.Server.WebSockets;
 
 namespace MatcherChief.Server.Queues
 {
@@ -10,10 +11,12 @@ namespace MatcherChief.Server.Queues
     public class OutboundQueueListener : IOutboundQueueListener
     {
         private readonly IQueueManager _queueManager;
+        private readonly IWebSocketResponseHandler _responseHandler;
 
-        public OutboundQueueListener(IQueueManager queueManager)
+        public OutboundQueueListener(IQueueManager queueManager, IWebSocketResponseHandler responseHandler)
         {
             _queueManager = queueManager;
+            _responseHandler = responseHandler;
         }
 
         public async Task Listen()

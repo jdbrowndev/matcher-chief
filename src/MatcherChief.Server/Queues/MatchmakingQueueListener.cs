@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
 using MatcherChief.Core.Models;
+using MatcherChief.Server.Models;
 
 namespace MatcherChief.Server.Queues
 {
@@ -13,9 +14,9 @@ namespace MatcherChief.Server.Queues
     public class MatchmakingQueueListener : IMatchmakingQueueListener
     {
         private readonly GameFormat _format;
-        private readonly BlockingCollection<MatchRequest> _queue;
+        private readonly BlockingCollection<QueuedMatchRequestModel> _queue;
 
-        public MatchmakingQueueListener(GameFormat format, BlockingCollection<MatchRequest> queue)
+        public MatchmakingQueueListener(GameFormat format, BlockingCollection<QueuedMatchRequestModel> queue)
         {
             _format = format;
             _queue = queue;
