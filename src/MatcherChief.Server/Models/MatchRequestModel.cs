@@ -1,10 +1,14 @@
-using MatcherChief.Core.Models;
+using System;
+using System.Collections.Generic;
 
 namespace MatcherChief.Server.Models
 {
     public class MatchRequestModel
     {
-        public GameFormat Format { get; set; }
-        // TODO: implement
+        public Guid PlayerId { get; set; }
+        public string PlayerName { get; set; }
+        public int GameFormat { get; set; }
+        public IEnumerable<int> GameTitles { get; set; }
+        public IEnumerable<int> GameModes { get; set; }
     }
 }

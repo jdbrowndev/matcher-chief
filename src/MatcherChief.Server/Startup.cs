@@ -1,3 +1,5 @@
+using MatcherChief.Core.Matchmaking;
+using MatcherChief.Core.Matchmaking.PreferenceScore;
 using MatcherChief.Server.Queues;
 using MatcherChief.Server.WebSockets;
 using Microsoft.AspNetCore.Builder;
@@ -10,6 +12,8 @@ namespace MatcherChief.Server
     {
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddTransient<IMatchmakingAlgorithm, PreferenceScoreMatchmakingAlgorithm>();
+            services.AddTransient<IPreferenceScoreCalculator, PreferenceScoreCalculator>();
             services.AddTransient<IMatchmakingQueueListenerFactory, MatchmakingQueueListenerFactory>();
             services.AddTransient<IWebSocketRequestHandler, WebSocketRequestHandler>();
             services.AddTransient<IWebSocketResponseHandler, WebSocketResponseHandler>();

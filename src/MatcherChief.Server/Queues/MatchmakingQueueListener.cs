@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
+using MatcherChief.Core.Matchmaking;
 using MatcherChief.Core.Models;
 using MatcherChief.Server.Models;
 
@@ -15,17 +16,23 @@ namespace MatcherChief.Server.Queues
     {
         private readonly GameFormat _format;
         private readonly BlockingCollection<QueuedMatchRequestModel> _queue;
+        private readonly IMatchmakingAlgorithm _matchMakingAlgorithm;
 
-        public MatchmakingQueueListener(GameFormat format, BlockingCollection<QueuedMatchRequestModel> queue)
+        public MatchmakingQueueListener(GameFormat format, BlockingCollection<QueuedMatchRequestModel> queue,
+            IMatchmakingAlgorithm matchMakingAlgorithm)
         {
             _format = format;
             _queue = queue;
+            _matchMakingAlgorithm = matchMakingAlgorithm;
         }
 
         public async Task Listen(CancellationToken token)
         {
-            // TODO: implement
-            await Task.Delay(5000);
+            while (!token.IsCancellationRequested)
+            {
+                var request = _queue.Take();
+                await Task.Delay(1000);
+            }
         }
     }
 }

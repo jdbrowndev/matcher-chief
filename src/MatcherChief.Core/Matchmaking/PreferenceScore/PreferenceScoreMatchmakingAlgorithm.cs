@@ -13,6 +13,7 @@ namespace MatcherChief.Core.Matchmaking.PreferenceScore
             _scoreCalculator = scoreCalculator;
         }
 
+        // TODO: adjust output to return list of unmatched players
         public IEnumerable<Match> GetMatches(GameFormat format, IEnumerable<MatchRequest> requests)
         {
             var matchSize = GameSetup.GameFormatsToPlayersRequired[format];
