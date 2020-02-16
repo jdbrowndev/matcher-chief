@@ -14,7 +14,7 @@ namespace MatcherChief.Core.Matchmaking.PreferenceScore
         }
 
         // TODO: adjust output to return list of unmatched players
-        public IEnumerable<Match> GetMatches(GameFormat format, IEnumerable<MatchRequest> requests)
+        public MatchmakeResult Matchmake(GameFormat format, IEnumerable<MatchRequest> requests)
         {
             var matchSize = GameSetup.GameFormatsToPlayersRequired[format];
             var matches = new List<Match>();
@@ -56,7 +56,8 @@ namespace MatcherChief.Core.Matchmaking.PreferenceScore
                 }
             }
 
-            return matches;
+            var result = new MatchmakeResult(matches, orderedRequests);
+            return result;
         }
 
         private bool HasPreference(MatchRequest request, Preference preference)

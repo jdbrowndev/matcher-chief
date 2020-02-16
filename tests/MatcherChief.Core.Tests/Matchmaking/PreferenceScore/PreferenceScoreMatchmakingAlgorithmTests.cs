@@ -41,16 +41,18 @@ namespace MatcherChief.Core.Tests.Matchmaking.PreferenceScore
             };
 
             _scoreCalculator.Setup(x => x.GetScores(It.IsAny<IEnumerable<MatchRequest>>())).Returns(scores);
-            var matches = _sut.GetMatches(GameFormat.OneVersusOne, new [] { request1, request2, request3 });
+            var result = _sut.Matchmake(GameFormat.OneVersusOne, new [] { request1, request2, request3 });
 
-            Assert.Single(matches);
-            var match = matches.Single();
+            Assert.Single(result.Matches);
+            var match = result.Matches.Single();
 
             Assert.Equal(GameFormat.OneVersusOne, match.Format);
             Assert.Equal(GameTitle.HaloReach, match.Title);
             Assert.Equal(GameMode.Slayer, match.Mode);
             Assert.Contains(player2, match.Players);
             Assert.Contains(player3, match.Players);
+
+            Assert.Contains(request1, result.UnmatchedRequests);
         }
 
         [Fact]
@@ -73,16 +75,18 @@ namespace MatcherChief.Core.Tests.Matchmaking.PreferenceScore
             };
 
             _scoreCalculator.Setup(x => x.GetScores(It.IsAny<IEnumerable<MatchRequest>>())).Returns(scores);
-            var matches = _sut.GetMatches(GameFormat.OneVersusOne, new [] { request1, request2, request3 });
+            var result = _sut.Matchmake(GameFormat.OneVersusOne, new [] { request1, request2, request3 });
 
-            Assert.Single(matches);
-            var match = matches.Single();
+            Assert.Single(result.Matches);
+            var match = result.Matches.Single();
             
             Assert.Equal(GameFormat.OneVersusOne, match.Format);
             Assert.Equal(GameTitle.HaloReach, match.Title);
             Assert.Equal(GameMode.Slayer, match.Mode);
             Assert.Contains(player1, match.Players);
             Assert.Contains(player3, match.Players);
+
+            Assert.Contains(request2, result.UnmatchedRequests);
         }
 
         [Fact]
@@ -109,7 +113,8 @@ namespace MatcherChief.Core.Tests.Matchmaking.PreferenceScore
             };
 
             _scoreCalculator.Setup(x => x.GetScores(It.IsAny<IEnumerable<MatchRequest>>())).Returns(scores);
-            var matches = _sut.GetMatches(GameFormat.OneVersusOne, new [] { request1, request2, request3, request4, request5 });
+            var result = _sut.Matchmake(GameFormat.OneVersusOne, new [] { request1, request2, request3, request4, request5 });
+            var matches = result.Matches;
 
             Assert.Equal(2, matches.Count());
             var match1 = matches.ElementAt(0);
@@ -127,6 +132,8 @@ namespace MatcherChief.Core.Tests.Matchmaking.PreferenceScore
             Assert.Equal(GameMode.Swat, match2.Mode);
             Assert.Contains(player2, match2.Players);
             Assert.Contains(player4, match2.Players);
+
+            Assert.Contains(request5, result.UnmatchedRequests);
         }
     }
 }

@@ -5,6 +5,6 @@ namespace MatcherChief.Core.Matchmaking
 {
     public interface IMatchmakingAlgorithm
     {
-         IEnumerable<Match> GetMatches(GameFormat format, IEnumerable<MatchRequest> requests);
+         MatchmakeResult Matchmake(GameFormat format, IEnumerable<MatchRequest> requests);
     }
 }
