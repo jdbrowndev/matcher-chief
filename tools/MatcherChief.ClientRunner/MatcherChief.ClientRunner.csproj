@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\MatcherChief.Client\MatcherChief.Client.csproj" />
+    <ProjectReference Include="..\..\src\MatcherChief.Shared\MatcherChief.Shared.csproj" />
+    <ProjectReference Include="..\..\src\MatcherChief.Core\MatcherChief.Core.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+</Project>

@@ -1,3 +1,4 @@
+using System;
 using MatcherChief.Core.Matchmaking;
 using MatcherChief.Core.Matchmaking.PreferenceScore;
 using MatcherChief.Server.Queues;
@@ -25,6 +26,13 @@ namespace MatcherChief.Server
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            var webSocketOptions = new WebSocketOptions() 
+            {
+                KeepAliveInterval = TimeSpan.FromSeconds(120),
+                ReceiveBufferSize = 1024 * 4
+            };
+
+            app.UseWebSockets(webSocketOptions);
             app.UseMiddleware<WebSocketHandlerMiddleware>();
         }
     }

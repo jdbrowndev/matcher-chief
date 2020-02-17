@@ -28,7 +28,7 @@ namespace MatcherChief.Server
         public override async Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Matchmaking starting...");
-            await base.StartAsync(cancellationToken);
+            await Task.CompletedTask;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -50,7 +50,7 @@ namespace MatcherChief.Server
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Matchmaking stopping...");
-            await base.StopAsync(cancellationToken);
+            await Task.CompletedTask;
         }
     }
 }
