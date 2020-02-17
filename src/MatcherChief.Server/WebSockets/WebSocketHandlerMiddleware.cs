@@ -1,3 +1,5 @@
+using System.Net.WebSockets;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
@@ -21,9 +23,12 @@ namespace MatcherChief.Server.WebSockets
                 if (context.WebSockets.IsWebSocketRequest)
                 {
                     var webSocket = await context.WebSockets.AcceptWebSocketAsync();
-                    var socketFinishedTcs = new TaskCompletionSource<object>();
+                    var socketFinishedTcs = new TaskCompletionSource<object>(); 
+
                     await _requestHandler.Handle(webSocket, socketFinishedTcs);
                     await socketFinishedTcs.Task;
+                    
+                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Response sent", CancellationToken.None);
                 }
                 else
                 {

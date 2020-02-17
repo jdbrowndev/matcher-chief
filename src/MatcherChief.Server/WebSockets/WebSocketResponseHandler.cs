@@ -40,7 +40,6 @@ namespace MatcherChief.Server.WebSockets
                 await webSocket.SendAsync(segment, WebSocketMessageType.Text, eom, CancellationToken.None);
             }
 
-            await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Match response sent", CancellationToken.None);
             tcs.TrySetResult(new object());
         }
     }

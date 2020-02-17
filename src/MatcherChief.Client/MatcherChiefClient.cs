@@ -42,13 +42,14 @@ namespace MatcherChief.Client
                 do
                 {
                     receiveResult = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken);
-                    sb.Append(Encoding.UTF8.GetString(buffer));
-                } while (!receiveResult.CloseStatus.HasValue);
+                    sb.Append(Encoding.UTF8.GetString(buffer).TrimEnd('\0'));
+                } while (!receiveResult.EndOfMessage);
 
                 var response = sb.ToString();
                 var model = JsonSerializer.Deserialize<MatchResponseModel>(response);
 
-                // TODO: close webSocket?
+                var closeResult = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken);
+                await webSocket.CloseAsync(closeResult.CloseStatus.Value, closeResult.CloseStatusDescription, cancellationToken);
 
                 return model;
             }

@@ -28,20 +28,24 @@ namespace MatcherChief.Server
         public override async Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Matchmaking starting...");
-            await Task.CompletedTask;
+            await base.StartAsync(cancellationToken);
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var tasks = new List<Task>();
 
+            // TODO: exceptions are being discarded in Task.Run... find way to handle
+            // TODO: Task.Run / BlockingCollection is preventing proper shutdown...
+            // TODO: might want to find an alternative to BlockingCollection
+
             foreach (var format in _queueManager.GameFormatsToQueues.Keys)
             {
                 var listener = _matchmakingQueueListenerFactory.Get(format);
-                tasks.Add(listener.Listen(stoppingToken));
+                tasks.Add(Task.Run(() => listener.Listen(stoppingToken)));
             }
 
-            tasks.Add(_outboundQueueListener.Listen(stoppingToken));
+            tasks.Add(Task.Run(() => _outboundQueueListener.Listen(stoppingToken)));
             BackgroundTasks = tasks;
 
             await Task.WhenAll(BackgroundTasks);
@@ -50,7 +54,7 @@ namespace MatcherChief.Server
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("Matchmaking stopping...");
-            await Task.CompletedTask;
+            await base.StopAsync(cancellationToken);
         }
     }
 }

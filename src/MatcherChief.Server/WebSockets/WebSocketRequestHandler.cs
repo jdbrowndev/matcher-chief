@@ -35,8 +35,8 @@ namespace MatcherChief.Server.WebSockets
             do
             {
                 receiveResult = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-                sb.Append(Encoding.UTF8.GetString(buffer));
-            } while (!receiveResult.CloseStatus.HasValue);
+                sb.Append(Encoding.UTF8.GetString(buffer).TrimEnd('\0'));
+            } while (!receiveResult.EndOfMessage);
 
             var request = sb.ToString();
             var model = JsonSerializer.Deserialize<MatchRequestModel>(request);
