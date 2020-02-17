@@ -20,7 +20,6 @@ namespace MatcherChief.Server.Queues
             _responseHandler = responseHandler;
         }
 
-        // TODO: asynchrouously take from queue?
         public async Task Listen(CancellationToken token)
         {
             var outQueue = _queueManager.OutboundQueue;

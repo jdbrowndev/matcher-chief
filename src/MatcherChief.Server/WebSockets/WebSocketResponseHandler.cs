@@ -54,7 +54,7 @@ namespace MatcherChief.Server.WebSockets
             var count = bytesPerSegment;
             while (offset < bytes.Length)
             {
-                if (offset + count >= bytes.Length)
+                if (offset + count > bytes.Length)
                     count = bytes.Length - offset;
 
                 segments.Add(new ArraySegment<byte>(bytes, offset, count));

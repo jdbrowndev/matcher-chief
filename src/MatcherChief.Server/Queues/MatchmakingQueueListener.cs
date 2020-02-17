@@ -34,28 +34,29 @@ namespace MatcherChief.Server.Queues
             _requestBuffer = new Dictionary<Guid, QueuedMatchRequestModel>();
         }
 
-        // TODO: asynchrouously take from queue?
-        public Task Listen(CancellationToken token)
+        public async Task Listen(CancellationToken token)
         {
-            while (!token.IsCancellationRequested)
-            {
-                var queuedRequest = _inQueue.Take();
-                _requestBuffer.Add(queuedRequest.Id, queuedRequest);
-
-                var playersRequired = GameSetup.GameFormatsToPlayersRequired[_format];
-
-                if (_requestBuffer.Count >= playersRequired)
+            // must use Task.Run since matchmaking is fully CPU-bound
+            await Task.Run(() => {
+                while (!token.IsCancellationRequested)
                 {
-                    var requests = _requestBuffer.Values
-                        .Select(x => new MatchRequest(x.Id, queuedRequest.Player, queuedRequest.Titles, queuedRequest.Modes, queuedRequest.QueuedOn))
-                        .ToList();
+                    var queuedRequest = _inQueue.Take();
+                    _requestBuffer.Add(queuedRequest.Id, queuedRequest);
 
-                    var result = _matchmakingAlgorithm.Matchmake(_format, requests);
+                    var playersRequired = GameSetup.GameFormatsToPlayersRequired[_format];
 
-                    HandleMatchmakeResult(result);
+                    if (_requestBuffer.Count >= playersRequired)
+                    {
+                        var requests = _requestBuffer.Values
+                            .Select(x => new MatchRequest(x.Id, queuedRequest.Player, queuedRequest.Titles, queuedRequest.Modes, queuedRequest.QueuedOn))
+                            .ToList();
+
+                        var result = _matchmakingAlgorithm.Matchmake(_format, requests);
+
+                        HandleMatchmakeResult(result);
+                    }
                 }
-            }
-            return Task.CompletedTask;
+            });
         }
 
         private void HandleMatchmakeResult(MatchmakeResult result)
