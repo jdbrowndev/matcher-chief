@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using MatcherChief.Core.Models;
 using MatcherChief.Server.Models;
 using MatcherChief.Server.Queues;
+using MatcherChief.Shared;
 
 namespace MatcherChief.Server.WebSockets
 {

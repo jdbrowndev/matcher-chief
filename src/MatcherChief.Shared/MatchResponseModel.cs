@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace MatcherChief.Server.Models
+namespace MatcherChief.Shared
 {
     public class MatchResponseModel
     {

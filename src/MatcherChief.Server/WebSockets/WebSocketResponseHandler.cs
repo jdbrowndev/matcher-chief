@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using MatcherChief.Server.Models;
+using MatcherChief.Shared;
 
 namespace MatcherChief.Server.WebSockets
 {
@@ -31,7 +32,7 @@ namespace MatcherChief.Server.WebSockets
             var json = JsonSerializer.Serialize(responseModel);
             var bytes = Encoding.UTF8.GetBytes(json);
             var bufferSize = 1024 * 4;
-            var segments = SegmentBytes(bytes, bufferSize);
+            var segments = ArraySegmentHelper.Segment(bytes, bufferSize);
 
             var webSocket = response.WebSocket;
             var tcs = response.WebSocketCompletionSource;
@@ -43,28 +44,6 @@ namespace MatcherChief.Server.WebSockets
 
             await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Match response sent", CancellationToken.None);
             tcs.TrySetResult(new object());
-        }
-
-        private List<ArraySegment<byte>> SegmentBytes(byte[] bytes, int bytesPerSegment)
-        {
-            var segments = new List<ArraySegment<byte>>();
-
-            var i = 0;
-            var offset = 0;
-            var count = bytesPerSegment;
-            while (offset < bytes.Length)
-            {
-                if (offset + count > bytes.Length)
-                    count = bytes.Length - offset;
-
-                segments.Add(new ArraySegment<byte>(bytes, offset, count));
-
-                i++;
-                offset = i * bytesPerSegment;
-                count = bytesPerSegment;
-            }
-
-            return segments;
         }
     }
 }
