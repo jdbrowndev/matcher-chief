@@ -9,7 +9,7 @@ namespace MatcherChief.Server.Queues
     public interface IQueueManager
     {
         Dictionary<GameFormat, BlockingCollection<QueuedMatchRequestModel>> GameFormatsToQueues { get; }
-        BlockingCollection<QueuedMatchRequestModel> OutboundQueue { get; }
+        BlockingCollection<QueuedMatchResponseModel> OutboundQueue { get; }
     }
 
     public class QueueManager : IQueueManager
@@ -24,10 +24,10 @@ namespace MatcherChief.Server.Queues
                 GameFormatsToQueues.Add(format, collection);
             }
 
-            OutboundQueue = new BlockingCollection<QueuedMatchRequestModel>(new ConcurrentQueue<QueuedMatchRequestModel>());
+            OutboundQueue = new BlockingCollection<QueuedMatchResponseModel>(new ConcurrentQueue<QueuedMatchResponseModel>());
         }
 
         public Dictionary<GameFormat, BlockingCollection<QueuedMatchRequestModel>> GameFormatsToQueues { get; private set; }
-        public BlockingCollection<QueuedMatchRequestModel> OutboundQueue { get; private set; }
+        public BlockingCollection<QueuedMatchResponseModel> OutboundQueue { get; private set; }
     }
 }

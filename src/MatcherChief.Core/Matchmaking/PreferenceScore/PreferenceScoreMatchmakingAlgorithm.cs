@@ -32,7 +32,7 @@ namespace MatcherChief.Core.Matchmaking.PreferenceScore
                 if (orderedRequests.Count < matchSize)
                     break;
 
-                var requestGroup = new List<MatchRequest>();
+                var requestGroup = new List<MatchRequest>( matchSize );
                 for (var i = orderedRequests.Count - 1; i >= 0; i--)
                 {
                     if (i + 1 + requestGroup.Count < matchSize)
@@ -44,13 +44,12 @@ namespace MatcherChief.Core.Matchmaking.PreferenceScore
                         requestGroup.Add(request);
                         if (requestGroup.Count == matchSize)
                         {
-                            var players = requestGroup.Select(x => x.Player).ToList();
                             requestGroup.ForEach(x => orderedRequests.Remove(x));
 
-                            var match = new Match(format, preference.Title, preference.Mode, players);
+                            var match = new Match(requestGroup, format, preference.Title, preference.Mode);
                             matches.Add(match);
 
-                            requestGroup.Clear();
+                            requestGroup = new List<MatchRequest>( matchSize );
                         }
                     }
                 }

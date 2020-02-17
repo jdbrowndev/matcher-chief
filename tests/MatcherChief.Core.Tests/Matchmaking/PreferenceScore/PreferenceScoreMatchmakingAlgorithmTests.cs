@@ -49,8 +49,8 @@ namespace MatcherChief.Core.Tests.Matchmaking.PreferenceScore
             Assert.Equal(GameFormat.OneVersusOne, match.Format);
             Assert.Equal(GameTitle.HaloReach, match.Title);
             Assert.Equal(GameMode.Slayer, match.Mode);
-            Assert.Contains(player2, match.Players);
-            Assert.Contains(player3, match.Players);
+            Assert.Contains(request2, match.Requests);
+            Assert.Contains(request3, match.Requests);
 
             Assert.Contains(request1, result.UnmatchedRequests);
         }
@@ -83,8 +83,8 @@ namespace MatcherChief.Core.Tests.Matchmaking.PreferenceScore
             Assert.Equal(GameFormat.OneVersusOne, match.Format);
             Assert.Equal(GameTitle.HaloReach, match.Title);
             Assert.Equal(GameMode.Slayer, match.Mode);
-            Assert.Contains(player1, match.Players);
-            Assert.Contains(player3, match.Players);
+            Assert.Contains(request1, match.Requests);
+            Assert.Contains(request3, match.Requests);
 
             Assert.Contains(request2, result.UnmatchedRequests);
         }
@@ -122,16 +122,16 @@ namespace MatcherChief.Core.Tests.Matchmaking.PreferenceScore
             Assert.Equal(GameFormat.OneVersusOne, match1.Format);
             Assert.Equal(GameTitle.HaloReach, match1.Title);
             Assert.Equal(GameMode.Slayer, match1.Mode);
-            Assert.Contains(player1, match1.Players);
-            Assert.Contains(player3, match1.Players);
+            Assert.Contains(request1, match1.Requests);
+            Assert.Contains(request3, match1.Requests);
 
             var match2 = matches.ElementAt(1);
             
             Assert.Equal(GameFormat.OneVersusOne, match2.Format);
             Assert.Equal(GameTitle.HaloReach, match2.Title);
             Assert.Equal(GameMode.Swat, match2.Mode);
-            Assert.Contains(player2, match2.Players);
-            Assert.Contains(player4, match2.Players);
+            Assert.Contains(request2, match2.Requests);
+            Assert.Contains(request4, match2.Requests);
 
             Assert.Contains(request5, result.UnmatchedRequests);
         }

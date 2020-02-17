@@ -21,8 +21,9 @@ namespace MatcherChief.Server.Queues
 
         public MatchmakingQueueListener Get(GameFormat format)
         {
-            var queue = _queueManager.GameFormatsToQueues[format];
-            var listener = new MatchmakingQueueListener(format, queue, _matchmakingAlgorithm);
+            var inQueue = _queueManager.GameFormatsToQueues[format];
+            var outQueue = _queueManager.OutboundQueue;
+            var listener = new MatchmakingQueueListener(format, inQueue, outQueue, _matchmakingAlgorithm);
             return listener;
         }
     }

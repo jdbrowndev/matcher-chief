@@ -44,8 +44,9 @@ namespace MatcherChief.Server.WebSockets
             var queue = _queueManager.GameFormatsToQueues[format];
             var queuedMatchRequest = new QueuedMatchRequestModel
             {
+                Id = Guid.NewGuid(),
                 WebSocket = webSocket,
-                CompletionSource = tcs,
+                WebSocketCompletionSource = tcs,
                 Player = new Player(model.PlayerId, model.PlayerName),
                 Titles = model.GameTitles.Cast<GameTitle>().ToList(),
                 Modes = model.GameModes.Cast<GameMode>().ToList(),

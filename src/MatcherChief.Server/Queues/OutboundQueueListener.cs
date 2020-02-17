@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using MatcherChief.Server.WebSockets;
 
@@ -5,7 +6,7 @@ namespace MatcherChief.Server.Queues
 {
     public interface IOutboundQueueListener
     {
-        Task Listen();
+        Task Listen(CancellationToken token);
     }
 
     public class OutboundQueueListener : IOutboundQueueListener
@@ -19,10 +20,15 @@ namespace MatcherChief.Server.Queues
             _responseHandler = responseHandler;
         }
 
-        public async Task Listen()
+        // TODO: asynchrouously take from queue?
+        public async Task Listen(CancellationToken token)
         {
-            // TODO: implement
-            await Task.Delay(5000);
+            var outQueue = _queueManager.OutboundQueue;
+            while (!token.IsCancellationRequested)
+            {
+                var response = outQueue.Take();
+                await _responseHandler.Handle(response);
+            }
         }
     }
 }

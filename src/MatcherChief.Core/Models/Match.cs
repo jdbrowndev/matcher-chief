@@ -1,20 +1,23 @@
+using System;
 using System.Collections.Generic;
 
 namespace MatcherChief.Core.Models
 {
     public class Match
     {
-        public Match(GameFormat format, GameTitle title, GameMode mode, IEnumerable<Player> players)
+        public Match(IEnumerable<MatchRequest> requests, GameFormat format, GameTitle title, GameMode mode)
         {
+            Id = Guid.NewGuid();
+            Requests = requests;
             Format = format;
             Title = title;
             Mode = mode;
-            Players = players;
         }
 
+        public Guid Id { get; private set; }
+        public IEnumerable<MatchRequest> Requests { get; private set; }
         public GameFormat Format { get; private set; }
         public GameTitle Title { get; private set; }
         public GameMode Mode { get; private set; }
-        public IEnumerable<Player> Players { get; private set; }
     }
 }

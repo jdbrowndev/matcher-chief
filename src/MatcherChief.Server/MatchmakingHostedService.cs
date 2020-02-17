@@ -41,7 +41,7 @@ namespace MatcherChief.Server
                 tasks.Add(listener.Listen(stoppingToken));
             }
 
-            tasks.Add(_outboundQueueListener.Listen());
+            tasks.Add(_outboundQueueListener.Listen(stoppingToken));
             BackgroundTasks = tasks;
 
             await Task.WhenAll(BackgroundTasks);
