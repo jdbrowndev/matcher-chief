@@ -8,6 +8,7 @@ using MatcherChief.Core;
 using MatcherChief.Core.Matchmaking;
 using MatcherChief.Core.Models;
 using MatcherChief.Server.Models;
+using Microsoft.Extensions.Logging;
 
 namespace MatcherChief.Server.Queues
 {
@@ -22,37 +23,46 @@ namespace MatcherChief.Server.Queues
         private readonly BlockingCollection<QueuedMatchRequestModel> _inQueue;
         private readonly BlockingCollection<QueuedMatchResponseModel> _outQueue;
         private readonly IMatchmakingAlgorithm _matchmakingAlgorithm;
+        private readonly ILogger<MatchmakingQueueListener> _logger;
         private readonly Dictionary<Guid, QueuedMatchRequestModel> _requestBuffer;
 
         public MatchmakingQueueListener(GameFormat format, BlockingCollection<QueuedMatchRequestModel> inQueue,
-            BlockingCollection<QueuedMatchResponseModel> outQueue, IMatchmakingAlgorithm matchmakingAlgorithm)
+            BlockingCollection<QueuedMatchResponseModel> outQueue, IMatchmakingAlgorithm matchmakingAlgorithm, ILogger<MatchmakingQueueListener> logger)
         {
             _format = format;
             _inQueue = inQueue;
             _outQueue = outQueue;
             _matchmakingAlgorithm = matchmakingAlgorithm;
+            _logger = logger;
             _requestBuffer = new Dictionary<Guid, QueuedMatchRequestModel>();
         }
 
         public Task Listen(CancellationToken token)
         {
-            while (!token.IsCancellationRequested)
+            try
             {
-                var queuedRequest = _inQueue.Take();
-                _requestBuffer.Add(queuedRequest.Id, queuedRequest);
-
-                var playersRequired = GameSetup.GameFormatsToPlayersRequired[_format];
-
-                if (_requestBuffer.Count >= playersRequired)
+                while (!token.IsCancellationRequested)
                 {
-                    var requests = _requestBuffer.Values
-                        .Select(x => new MatchRequest(x.Id, queuedRequest.Player, queuedRequest.Titles, queuedRequest.Modes, queuedRequest.QueuedOn))
-                        .ToList();
+                    var queuedRequest = _inQueue.Take();
+                    _requestBuffer.Add(queuedRequest.Id, queuedRequest);
 
-                    var result = _matchmakingAlgorithm.Matchmake(_format, requests);
+                    var playersRequired = GameSetup.GameFormatsToPlayersRequired[_format];
 
-                    HandleMatchmakeResult(result);
+                    if (_requestBuffer.Count >= playersRequired)
+                    {
+                        var requests = _requestBuffer.Values
+                            .Select(x => new MatchRequest(x.Id, queuedRequest.Player, queuedRequest.Titles, queuedRequest.Modes, queuedRequest.QueuedOn))
+                            .ToList();
+
+                        var result = _matchmakingAlgorithm.Matchmake(_format, requests);
+
+                        HandleMatchmakeResult(result);
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "MatchmakingQueueListener error");
             }
             return Task.CompletedTask;
         }

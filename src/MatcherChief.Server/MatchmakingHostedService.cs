@@ -35,7 +35,6 @@ namespace MatcherChief.Server
         {
             var tasks = new List<Task>();
 
-            // TODO: exceptions are being discarded in Task.Run... find way to handle
             // TODO: Task.Run / BlockingCollection is preventing proper shutdown...
             // TODO: might want to find an alternative to BlockingCollection
 
