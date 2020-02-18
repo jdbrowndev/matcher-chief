@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -20,14 +19,14 @@ namespace MatcherChief.Server.Queues
     public class MatchmakingQueueListener : IMatchmakingQueueListener
     {
         private readonly GameFormat _format;
-        private readonly BlockingCollection<QueuedMatchRequestModel> _inQueue;
-        private readonly BlockingCollection<QueuedMatchResponseModel> _outQueue;
+        private readonly AsyncConcurrentQueue<QueuedMatchRequestModel> _inQueue;
+        private readonly AsyncConcurrentQueue<QueuedMatchResponseModel> _outQueue;
         private readonly IMatchmakingAlgorithm _matchmakingAlgorithm;
         private readonly ILogger<MatchmakingQueueListener> _logger;
         private readonly Dictionary<Guid, QueuedMatchRequestModel> _requestBuffer;
 
-        public MatchmakingQueueListener(GameFormat format, BlockingCollection<QueuedMatchRequestModel> inQueue,
-            BlockingCollection<QueuedMatchResponseModel> outQueue, IMatchmakingAlgorithm matchmakingAlgorithm, ILogger<MatchmakingQueueListener> logger)
+        public MatchmakingQueueListener(GameFormat format, AsyncConcurrentQueue<QueuedMatchRequestModel> inQueue,
+            AsyncConcurrentQueue<QueuedMatchResponseModel> outQueue, IMatchmakingAlgorithm matchmakingAlgorithm, ILogger<MatchmakingQueueListener> logger)
         {
             _format = format;
             _inQueue = inQueue;
@@ -37,13 +36,13 @@ namespace MatcherChief.Server.Queues
             _requestBuffer = new Dictionary<Guid, QueuedMatchRequestModel>();
         }
 
-        public Task Listen(CancellationToken token)
+        public async Task Listen(CancellationToken token)
         {
             try
             {
                 while (!token.IsCancellationRequested)
                 {
-                    var queuedRequest = _inQueue.Take();
+                    var queuedRequest = await _inQueue.DequeueAsync(token);
                     _requestBuffer.Add(queuedRequest.Id, queuedRequest);
 
                     var playersRequired = GameSetup.GameFormatsToPlayersRequired[_format];
@@ -60,15 +59,21 @@ namespace MatcherChief.Server.Queues
                     }
                 }
             }
+            catch (OperationCanceledException)
+            {
+                var name = Enum.GetName(typeof(GameFormat), _format);
+                _logger.LogInformation($"MatchmakingQueueListener for {name} queue shutting down...");
+            }
             catch (Exception e)
             {
                 _logger.LogError(e, "MatchmakingQueueListener error");
             }
-            return Task.CompletedTask;
         }
 
         private void HandleMatchmakeResult(MatchmakeResult result)
         {
+            var responses = new List<QueuedMatchResponseModel>();
+
             foreach (var match in result.Matches)
             foreach (var request in match.Requests)
             {
@@ -81,9 +86,11 @@ namespace MatcherChief.Server.Queues
                     Player = queuedRequest.Player,
                     Match = match
                 };
-                _outQueue.Add(response);
+                responses.Add(response);
                 _requestBuffer.Remove(request.Id);
             }
+
+            _outQueue.EnqueueRange(responses);
         }
     }
 }

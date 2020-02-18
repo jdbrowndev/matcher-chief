@@ -8,26 +8,26 @@ namespace MatcherChief.Server.Queues
 {
     public interface IQueueManager
     {
-        Dictionary<GameFormat, BlockingCollection<QueuedMatchRequestModel>> GameFormatsToQueues { get; }
-        BlockingCollection<QueuedMatchResponseModel> OutboundQueue { get; }
+        Dictionary<GameFormat, AsyncConcurrentQueue<QueuedMatchRequestModel>> GameFormatsToQueues { get; }
+        AsyncConcurrentQueue<QueuedMatchResponseModel> OutboundQueue { get; }
     }
 
     public class QueueManager : IQueueManager
     {
         public QueueManager()
         {
-            GameFormatsToQueues = new Dictionary<GameFormat, BlockingCollection<QueuedMatchRequestModel>>();
+            GameFormatsToQueues = new Dictionary<GameFormat, AsyncConcurrentQueue<QueuedMatchRequestModel>>();
 
             foreach (GameFormat format in Enum.GetValues(typeof(GameFormat)))
             {
-                var collection = new BlockingCollection<QueuedMatchRequestModel>(new ConcurrentQueue<QueuedMatchRequestModel>());
+                var collection = new AsyncConcurrentQueue<QueuedMatchRequestModel>();
                 GameFormatsToQueues.Add(format, collection);
             }
 
-            OutboundQueue = new BlockingCollection<QueuedMatchResponseModel>(new ConcurrentQueue<QueuedMatchResponseModel>());
+            OutboundQueue = new AsyncConcurrentQueue<QueuedMatchResponseModel>();
         }
 
-        public Dictionary<GameFormat, BlockingCollection<QueuedMatchRequestModel>> GameFormatsToQueues { get; private set; }
-        public BlockingCollection<QueuedMatchResponseModel> OutboundQueue { get; private set; }
+        public Dictionary<GameFormat, AsyncConcurrentQueue<QueuedMatchRequestModel>> GameFormatsToQueues { get; private set; }
+        public AsyncConcurrentQueue<QueuedMatchResponseModel> OutboundQueue { get; private set; }
     }
 }

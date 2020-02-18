@@ -53,7 +53,7 @@ namespace MatcherChief.Server.WebSockets
                 Modes = model.GameModes.Cast<GameMode>().ToList(),
                 QueuedOn = DateTime.Now
             };
-            queue.Add(queuedMatchRequest);
+            queue.Enqueue(queuedMatchRequest);
         }
     }
 }

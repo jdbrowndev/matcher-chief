@@ -35,16 +35,13 @@ namespace MatcherChief.Server
         {
             var tasks = new List<Task>();
 
-            // TODO: Task.Run / BlockingCollection is preventing proper shutdown...
-            // TODO: might want to find an alternative to BlockingCollection
-
             foreach (var format in _queueManager.GameFormatsToQueues.Keys)
             {
                 var listener = _matchmakingQueueListenerFactory.Get(format);
-                tasks.Add(Task.Run(() => listener.Listen(stoppingToken)));
+                tasks.Add(listener.Listen(stoppingToken));
             }
 
-            tasks.Add(Task.Run(() => _outboundQueueListener.Listen(stoppingToken)));
+            tasks.Add(_outboundQueueListener.Listen(stoppingToken));
             BackgroundTasks = tasks;
 
             await Task.WhenAll(BackgroundTasks);

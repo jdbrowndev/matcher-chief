@@ -31,9 +31,13 @@ namespace MatcherChief.Server.Queues
                 var outQueue = _queueManager.OutboundQueue;
                 while (!token.IsCancellationRequested)
                 {
-                    var response = outQueue.Take();
+                    var response = await outQueue.DequeueAsync(token);
                     await _responseHandler.Handle(response);
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                _logger.LogInformation("OutboundQueueListener shutting down...");
             }
             catch (Exception e)
             {
