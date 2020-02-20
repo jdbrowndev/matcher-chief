@@ -12,6 +12,7 @@ namespace MatcherChief.Client
 {
     public class MatcherChiefClient
     {
+        private const int BUFFER_SIZE = 1024 * 4;
         private readonly Uri _matchmakingServer;
 
         public MatcherChiefClient(Uri matchmakingServer)
@@ -21,38 +22,67 @@ namespace MatcherChief.Client
 
         public async Task<MatchResponseModel> GetMatch(MatchRequestModel request, CancellationToken cancellationToken)
         {
+            ValidateRequest(request);
+
             using (var webSocket = new ClientWebSocket())
             {
-                var json = JsonSerializer.Serialize(request);
-                var bytes = Encoding.UTF8.GetBytes(json);
-                var bufferSize = 1024 * 4;
-                var segments = ArraySegmentHelper.Segment(bytes, bufferSize);
-
-                await webSocket.ConnectAsync(new Uri(_matchmakingServer, "/ws"), cancellationToken);
-                foreach (var segment in segments)
-                {
-                    var eom = segment == segments.Last();
-                    await webSocket.SendAsync(segment, WebSocketMessageType.Text, eom, CancellationToken.None);
-                }
-
-                var sb = new StringBuilder();
-                var buffer = new byte[1024 * 4];
-                WebSocketReceiveResult receiveResult;
-
-                do
-                {
-                    receiveResult = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken);
-                    sb.Append(Encoding.UTF8.GetString(buffer).TrimEnd('\0'));
-                } while (!receiveResult.EndOfMessage);
-
-                var response = sb.ToString();
-                var model = JsonSerializer.Deserialize<MatchResponseModel>(response);
-
-                var closeResult = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken);
-                await webSocket.CloseAsync(closeResult.CloseStatus.Value, closeResult.CloseStatusDescription, cancellationToken);
-
-                return model;
+                await SendRequest(request, webSocket, cancellationToken);
+                var response = await ReceiveResponse(webSocket, cancellationToken);
+                await CloseHandshake(webSocket, cancellationToken);
+                return response;
             }
+        }
+
+        private void ValidateRequest(MatchRequestModel request)
+        {
+            if (request.PlayerId == Guid.Empty)
+                throw new ArgumentException("PlayerId required");
+            if (string.IsNullOrWhiteSpace(request.PlayerName))
+                throw new ArgumentException("PlayerName required");
+            if (request.GameTitles == null || !request.GameTitles.Any())
+                throw new ArgumentException("At least one GameTitle required");
+            if (request.GameModes == null || !request.GameModes.Any())
+                throw new ArgumentException("At least one GameMode required");
+            if (GameSetup.GameFormatsToModes[request.GameFormat].Except(request.GameModes).Count() != 0)
+                throw new ArgumentException("All GameModes must be valid for the selected GameFormat");
+        }
+
+        private async Task SendRequest(MatchRequestModel request, ClientWebSocket webSocket, CancellationToken cancellationToken)
+        {
+            var json = JsonSerializer.Serialize(request);
+            var bytes = Encoding.UTF8.GetBytes(json);
+            var segments = ArraySegmentHelper.Segment(bytes, BUFFER_SIZE);
+
+            await webSocket.ConnectAsync(new Uri(_matchmakingServer, "/ws"), cancellationToken);
+            foreach (var segment in segments)
+            {
+                var eom = segment == segments.Last();
+                await webSocket.SendAsync(segment, WebSocketMessageType.Text, eom, CancellationToken.None);
+            }
+        }
+
+        private async Task<MatchResponseModel> ReceiveResponse(ClientWebSocket webSocket, CancellationToken cancellationToken)
+        {
+            var sb = new StringBuilder();
+            var buffer = new byte[BUFFER_SIZE];
+            WebSocketReceiveResult receiveResult;
+
+            do
+            {
+                receiveResult = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken);
+                sb.Append(Encoding.UTF8.GetString(buffer).TrimEnd('\0'));
+            } while (!receiveResult.EndOfMessage);
+
+            var response = sb.ToString();
+            var model = JsonSerializer.Deserialize<MatchResponseModel>(response);
+            return model;
+        }
+
+        private async Task CloseHandshake(ClientWebSocket webSocket, CancellationToken cancellationToken)
+        {
+            var buffer = new byte[BUFFER_SIZE];
+            var closeResult = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cancellationToken);
+            await webSocket.CloseAsync(closeResult.CloseStatus.Value, closeResult.CloseStatusDescription, cancellationToken);
         }
     }
 }
