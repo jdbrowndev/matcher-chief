@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
+using MatcherChief.Shared.Enums;
 
-namespace MatcherChief.Shared
+namespace MatcherChief.Shared.Contract
 {
     public class MatchResponseModel
     {
         public Guid MatchId { get; set; }
-        public int GameFormat { get; set; }
-        public int GameTitle { get; set; }
-        public int GameMode { get; set; }
+        public GameFormat GameFormat { get; set; }
+        public GameTitle GameTitle { get; set; }
+        public GameMode GameMode { get; set; }
         public IEnumerable<MatchResponsePlayerModel> Players { get; set; }
     }
 

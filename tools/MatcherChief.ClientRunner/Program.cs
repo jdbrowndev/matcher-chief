@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MatcherChief.Client;
-using MatcherChief.Shared;
+using MatcherChief.Shared.Contract;
 using MatcherChief.Shared.Enums;
 
 namespace MatcherChief.ClientRunner
@@ -20,9 +20,9 @@ namespace MatcherChief.ClientRunner
             {
                 PlayerId = Guid.NewGuid(),
                 PlayerName = "player" + random.Next(10000),
-                GameFormat = (int) GameFormat.OneVersusOne,
-                GameTitles = new [] { (int) GameTitle.HaloReach },
-                GameModes = new [] { (int) GameMode.Slayer }
+                GameFormat = GameFormat.OneVersusOne,
+                GameTitles = new [] { GameTitle.HaloReach },
+                GameModes = new [] { GameMode.Slayer }
             };
 
             var response = await client.GetMatch(request, CancellationToken.None);

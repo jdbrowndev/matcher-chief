@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
@@ -8,8 +7,7 @@ using System.Threading.Tasks;
 using MatcherChief.Server.Matchmaking.Models;
 using MatcherChief.Server.Models;
 using MatcherChief.Server.Queues;
-using MatcherChief.Shared;
-using MatcherChief.Shared.Enums;
+using MatcherChief.Shared.Contract;
 
 namespace MatcherChief.Server.WebSockets
 {
@@ -42,16 +40,15 @@ namespace MatcherChief.Server.WebSockets
             var request = sb.ToString();
             var model = JsonSerializer.Deserialize<MatchRequestModel>(request);
 
-            var format = (GameFormat) model.GameFormat;
-            var queue = _queueManager.GameFormatsToQueues[format];
+            var queue = _queueManager.GameFormatsToQueues[model.GameFormat];
             var queuedMatchRequest = new QueuedMatchRequestModel
             {
                 Id = Guid.NewGuid(),
                 WebSocket = webSocket,
                 WebSocketCompletionSource = tcs,
                 Player = new Player(model.PlayerId, model.PlayerName),
-                Titles = model.GameTitles.Cast<GameTitle>().ToList(),
-                Modes = model.GameModes.Cast<GameMode>().ToList(),
+                Titles = model.GameTitles,
+                Modes = model.GameModes,
                 QueuedOn = DateTime.Now
             };
             queue.Enqueue(queuedMatchRequest);

@@ -6,6 +6,7 @@ using System.Text.Json;
 using MatcherChief.Shared;
 using System.Text;
 using System.Linq;
+using MatcherChief.Shared.Contract;
 
 namespace MatcherChief.Client
 {
@@ -18,7 +19,6 @@ namespace MatcherChief.Client
             _matchmakingServer = matchmakingServer;
         }
 
-        // TODO: clean up request/response models
         public async Task<MatchResponseModel> GetMatch(MatchRequestModel request, CancellationToken cancellationToken)
         {
             using (var webSocket = new ClientWebSocket())

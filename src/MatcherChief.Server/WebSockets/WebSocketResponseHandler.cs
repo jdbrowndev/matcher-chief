@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MatcherChief.Server.Models;
 using MatcherChief.Shared;
+using MatcherChief.Shared.Contract;
 
 namespace MatcherChief.Server.WebSockets
 {
@@ -21,9 +22,9 @@ namespace MatcherChief.Server.WebSockets
             var responseModel = new MatchResponseModel
             {
                 MatchId = response.Match.Id,
-                GameFormat = (int) response.Match.Format,
-                GameTitle = (int) response.Match.Title,
-                GameMode = (int) response.Match.Mode,
+                GameFormat = response.Match.Format,
+                GameTitle = response.Match.Title,
+                GameMode = response.Match.Mode,
                 Players = response.Match.Requests.Select(x => new MatchResponsePlayerModel { PlayerId = x.Player.Id, PlayerName = x.Player.Name })
             };
 
