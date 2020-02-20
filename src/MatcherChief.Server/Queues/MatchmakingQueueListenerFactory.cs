@@ -1,5 +1,5 @@
-using MatcherChief.Core.Matchmaking;
-using MatcherChief.Core.Models;
+using MatcherChief.Server.Matchmaking;
+using MatcherChief.Shared.Enums;
 using Microsoft.Extensions.Logging;
 
 namespace MatcherChief.Server.Queues

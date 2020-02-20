@@ -1,6 +1,6 @@
 using System;
-using MatcherChief.Core.Matchmaking;
-using MatcherChief.Core.Matchmaking.PreferenceScore;
+using MatcherChief.Server.Matchmaking;
+using MatcherChief.Server.Matchmaking.PreferenceScore;
 using MatcherChief.Server.Queues;
 using MatcherChief.Server.WebSockets;
 using Microsoft.AspNetCore.Builder;

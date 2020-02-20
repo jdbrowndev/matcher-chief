@@ -1,6 +1,6 @@
-using MatcherChief.Core.Models;
+using MatcherChief.Shared.Enums;
 
-namespace MatcherChief.Core.Matchmaking.PreferenceScore
+namespace MatcherChief.Server.Matchmaking.PreferenceScore
 {
     public class Preference
     {

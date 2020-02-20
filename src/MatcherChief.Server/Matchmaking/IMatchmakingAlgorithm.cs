@@ -1,7 +1,8 @@
 using System.Collections.Generic;
-using MatcherChief.Core.Models;
+using MatcherChief.Server.Matchmaking.Models;
+using MatcherChief.Shared.Enums;
 
-namespace MatcherChief.Core.Matchmaking
+namespace MatcherChief.Server.Matchmaking
 {
     public interface IMatchmakingAlgorithm
     {

@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using MatcherChief.Core.Models;
+using MatcherChief.Server.Matchmaking.Models;
+using MatcherChief.Shared;
+using MatcherChief.Shared.Enums;
 
-namespace MatcherChief.Core.Matchmaking.PreferenceScore
+namespace MatcherChief.Server.Matchmaking.PreferenceScore
 {
     public class PreferenceScoreMatchmakingAlgorithm : IMatchmakingAlgorithm
     {

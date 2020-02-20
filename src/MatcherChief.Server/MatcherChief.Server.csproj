@@ -5,7 +5,6 @@
   </PropertyGroup>
 
     <ItemGroup>
-    <ProjectReference Include="..\MatcherChief.Core\MatcherChief.Core.csproj" />
     <ProjectReference Include="..\MatcherChief.Shared\MatcherChief.Shared.csproj" />
   </ItemGroup>
 

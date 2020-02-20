@@ -1,9 +1,10 @@
 using System;
-using MatcherChief.Core.Matchmaking.PreferenceScore;
-using MatcherChief.Core.Models;
+using MatcherChief.Server.Matchmaking.Models;
+using MatcherChief.Server.Matchmaking.PreferenceScore;
+using MatcherChief.Shared.Enums;
 using Xunit;
 
-namespace MatcherChief.Core.Tests.Matchmaking.PreferenceScore
+namespace MatcherChief.Server.Tests.Matchmaking.PreferenceScore
 {
     public class PreferenceScoreCalculatorTests
     {

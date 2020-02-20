@@ -1,8 +1,7 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using MatcherChief.Core.Models;
 using MatcherChief.Server.Models;
+using MatcherChief.Shared.Enums;
 
 namespace MatcherChief.Server.Queues
 {

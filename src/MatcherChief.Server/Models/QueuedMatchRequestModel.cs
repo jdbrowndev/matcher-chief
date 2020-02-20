@@ -2,7 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
-using MatcherChief.Core.Models;
+using MatcherChief.Server.Matchmaking.Models;
+using MatcherChief.Shared.Enums;
 
 namespace MatcherChief.Server.Models
 {

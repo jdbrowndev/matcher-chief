@@ -1,4 +1,4 @@
-namespace MatcherChief.Core.Models
+namespace MatcherChief.Shared.Enums
 {
     public enum GameTitle
     {

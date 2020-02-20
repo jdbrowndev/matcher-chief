@@ -1,7 +1,7 @@
 using System;
 using System.Net.WebSockets;
 using System.Threading.Tasks;
-using MatcherChief.Core.Models;
+using MatcherChief.Server.Matchmaking.Models;
 
 namespace MatcherChief.Server.Models
 {

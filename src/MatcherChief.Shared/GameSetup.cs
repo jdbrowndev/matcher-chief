@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using MatcherChief.Core.Models;
+using MatcherChief.Shared.Enums;
 
-namespace MatcherChief.Core
+namespace MatcherChief.Shared
 {
     public static class GameSetup
     {

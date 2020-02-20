@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using MatcherChief.Shared.Enums;
 
-namespace MatcherChief.Core.Models
+namespace MatcherChief.Server.Matchmaking.Models
 {
     public class Match
     {

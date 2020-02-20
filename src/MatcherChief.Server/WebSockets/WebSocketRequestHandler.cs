@@ -5,10 +5,11 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using MatcherChief.Core.Models;
+using MatcherChief.Server.Matchmaking.Models;
 using MatcherChief.Server.Models;
 using MatcherChief.Server.Queues;
 using MatcherChief.Shared;
+using MatcherChief.Shared.Enums;
 
 namespace MatcherChief.Server.WebSockets
 {

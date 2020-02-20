@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using MatcherChief.Core.Models;
+using MatcherChief.Server.Matchmaking.Models;
 
-namespace MatcherChief.Core.Matchmaking.PreferenceScore
+namespace MatcherChief.Server.Matchmaking.PreferenceScore
 {
     public interface IPreferenceScoreCalculator
     {

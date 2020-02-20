@@ -2,8 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MatcherChief.Client;
-using MatcherChief.Core.Models;
 using MatcherChief.Shared;
+using MatcherChief.Shared.Enums;
 
 namespace MatcherChief.ClientRunner
 {

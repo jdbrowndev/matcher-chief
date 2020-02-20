@@ -1,6 +1,6 @@
 using System;
 
-namespace MatcherChief.Core.Models
+namespace MatcherChief.Server.Matchmaking.Models
 {
     public class Player
     {
