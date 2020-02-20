@@ -26,22 +26,24 @@ namespace MatcherChief.Server.Queues
 
         public async Task Listen(CancellationToken token)
         {
-            try
+            var outQueue = _queueManager.OutboundQueue;
+            _logger.LogInformation($"OutboundQueueListener listening...");
+
+            while (!token.IsCancellationRequested)
             {
-                var outQueue = _queueManager.OutboundQueue;
-                while (!token.IsCancellationRequested)
+                try
                 {
                     var response = await outQueue.DequeueAsync(token);
                     await _responseHandler.Handle(response);
                 }
-            }
-            catch (OperationCanceledException)
-            {
-                _logger.LogInformation("OutboundQueueListener shutting down...");
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "OutboundQueueListener error");
+                catch (OperationCanceledException)
+                {
+                    _logger.LogInformation("OutboundQueueListener shutting down...");
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e, "OutboundQueueListener error");
+                }
             }
         }
     }

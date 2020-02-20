@@ -20,6 +20,7 @@ namespace MatcherChief.Server.Queues
     public class MatchmakingQueueListener : IMatchmakingQueueListener
     {
         private readonly GameFormat _format;
+        private readonly string _formatName;
         private readonly AsyncConcurrentQueue<QueuedMatchRequestModel> _inQueue;
         private readonly AsyncConcurrentQueue<QueuedMatchResponseModel> _outQueue;
         private readonly IMatchmakingAlgorithm _matchmakingAlgorithm;
@@ -30,6 +31,7 @@ namespace MatcherChief.Server.Queues
             AsyncConcurrentQueue<QueuedMatchResponseModel> outQueue, IMatchmakingAlgorithm matchmakingAlgorithm, ILogger<MatchmakingQueueListener> logger)
         {
             _format = format;
+            _formatName = Enum.GetName(typeof(GameFormat), _format);
             _inQueue = inQueue;
             _outQueue = outQueue;
             _matchmakingAlgorithm = matchmakingAlgorithm;
@@ -39,9 +41,10 @@ namespace MatcherChief.Server.Queues
 
         public async Task Listen(CancellationToken token)
         {
-            try
+            _logger.LogInformation($"MatchmakingQueueListener ({_formatName}) listening...");
+            while (!token.IsCancellationRequested)
             {
-                while (!token.IsCancellationRequested)
+                try
                 {
                     var queuedRequest = await _inQueue.DequeueAsync(token);
                     _requestBuffer.Add(queuedRequest.Id, queuedRequest);
@@ -59,15 +62,14 @@ namespace MatcherChief.Server.Queues
                         HandleMatchmakeResult(result);
                     }
                 }
-            }
-            catch (OperationCanceledException)
-            {
-                var name = Enum.GetName(typeof(GameFormat), _format);
-                _logger.LogInformation($"MatchmakingQueueListener for {name} queue shutting down...");
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "MatchmakingQueueListener error");
+                catch (OperationCanceledException)
+                {
+                    _logger.LogInformation($"MatchmakingQueueListener ({_formatName}) shutting down...");
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError(e, $"MatchmakingQueueListener ({_formatName}) error");
+                }
             }
         }
 
