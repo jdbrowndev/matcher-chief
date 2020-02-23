@@ -14,6 +14,8 @@ public class AsyncConcurrentQueue<T>
         _queue = new ConcurrentQueue<T>();
     }
 
+    public int Count { get { return _queue.Count; } }
+
     public void Enqueue(T item)
     {
         _queue.Enqueue(item);

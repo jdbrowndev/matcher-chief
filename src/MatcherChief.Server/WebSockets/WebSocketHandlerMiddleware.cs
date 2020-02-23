@@ -37,7 +37,7 @@ namespace MatcherChief.Server.WebSockets
             }
             else
             {
-                context.Response.StatusCode = 404;
+                await _next(context);
             }
         }
     }

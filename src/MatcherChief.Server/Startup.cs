@@ -1,4 +1,5 @@
 using System;
+using MatcherChief.Server.HostedService;
 using MatcherChief.Server.Matchmaking;
 using MatcherChief.Server.Matchmaking.PreferenceScore;
 using MatcherChief.Server.Queues;
@@ -21,9 +22,13 @@ namespace MatcherChief.Server
             services.AddTransient<IWebSocketRequestHandler, WebSocketRequestHandler>();
             services.AddTransient<IWebSocketResponseHandler, WebSocketResponseHandler>();
 
+            services.AddHostedService<MatchmakingHostedService>();
+            services.AddTransient<IHostedServiceAccessor<MatchmakingHostedService>, HostedServiceAccessor<MatchmakingHostedService>>();
+
             services.AddSingleton<IQueueManager, QueueManager>();
             services.AddSingleton<IOutboundQueueListener, OutboundQueueListener>();
-            services.AddHostedService<MatchmakingHostedService>();
+
+            services.AddControllers();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -36,6 +41,12 @@ namespace MatcherChief.Server
 
             app.UseWebSockets(webSocketOptions);
             app.UseMiddleware<WebSocketHandlerMiddleware>();
+
+            app.UseRouting();
+            app.UseEndpoints(endpoints => 
+            {
+                endpoints.MapControllerRoute("default", "/api/{controller}/{action}/{id?}");
+            });
         }
     }
 }

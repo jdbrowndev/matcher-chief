@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using MatcherChief.Server.Queues.Auditing;
 using MatcherChief.Server.WebSockets;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace MatcherChief.Server.Queues

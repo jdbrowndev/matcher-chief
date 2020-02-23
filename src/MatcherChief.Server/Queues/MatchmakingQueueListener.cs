@@ -14,6 +14,8 @@ namespace MatcherChief.Server.Queues
 {
     public interface IMatchmakingQueueListener
     {
+        GameFormat Format { get; }
+        int BufferCount { get; }
         Task Listen(CancellationToken token);
     }
 
@@ -26,6 +28,10 @@ namespace MatcherChief.Server.Queues
         private readonly IMatchmakingAlgorithm _matchmakingAlgorithm;
         private readonly ILogger<MatchmakingQueueListener> _logger;
         private readonly Dictionary<Guid, QueuedMatchRequestModel> _requestBuffer;
+
+        public GameFormat Format { get { return _format; } }
+
+        public int BufferCount { get { return _requestBuffer.Count; } }
 
         public MatchmakingQueueListener(GameFormat format, AsyncConcurrentQueue<QueuedMatchRequestModel> inQueue,
             AsyncConcurrentQueue<QueuedMatchResponseModel> outQueue, IMatchmakingAlgorithm matchmakingAlgorithm, ILogger<MatchmakingQueueListener> logger)
