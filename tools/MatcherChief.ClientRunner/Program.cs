@@ -13,23 +13,28 @@ namespace MatcherChief.ClientRunner
     public class Program
     {
         private static Random _random = new Random();
-        private static int _playerCount = 0;
         private static GameFormat[] _gameFormats = (GameFormat[]) Enum.GetValues(typeof(GameFormat));
         private static GameTitle[] _gameTitles = (GameTitle[]) Enum.GetValues(typeof(GameTitle));
 
         public static async Task Main(string[] args)
         {
-            // TODO: clean up
-            var uri = new Uri("ws://localhost:48689");
+            var msDelay = 50;
+            if (args.Length > 0)
+                msDelay = int.Parse(args[0]);
 
+            var uriString = "ws://localhost:48689";
+            if (args.Length > 1)
+                uriString = args[1];
+
+            var uri = new Uri(uriString);
             var tasks = new List<Task>();
             while (true)
             {
                 var client = new MatcherChiefClient(uri);
                 var request = GetRequest();
                 var responseTask = client.GetMatch(request, CancellationToken.None);
-                tasks.Add(responseTask);
-                await Task.Delay(250);
+                tasks = tasks.Where(x => !x.IsCompleted).Concat(new [] { responseTask }).ToList();
+                await Task.Delay(msDelay);
             }
         }
 
@@ -45,7 +50,7 @@ namespace MatcherChief.ClientRunner
                     titles.Add(title);
             }
             if (!titles.Any())
-                titles.Add(GameTitle.HaloCE);
+                titles.Add(_gameTitles.First());
 
             var modes = new List<GameMode>();
             var gameModes = GameSetup.GameFormatsToModes[format];
@@ -58,10 +63,11 @@ namespace MatcherChief.ClientRunner
             if (!modes.Any())
                 modes.Add(gameModes.First());
 
+            var playerId = Guid.NewGuid();
             var request = new MatchRequestModel
             {
-                PlayerId = Guid.NewGuid(),
-                PlayerName = "player" + _playerCount++,
+                PlayerId = playerId,
+                PlayerName = $"player{playerId:N}",
                 GameFormat = format,
                 GameTitles = titles,
                 GameModes = modes

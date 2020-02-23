@@ -16,6 +16,8 @@ namespace MatcherChief.Server.Queues
     {
         GameFormat Format { get; }
         int BufferCount { get; }
+        IEnumerable<DateTime> BufferQueuedOnTimestamps { get; }
+        long MatchCount { get; }
         Task Listen(CancellationToken token);
     }
 
@@ -28,10 +30,18 @@ namespace MatcherChief.Server.Queues
         private readonly IMatchmakingAlgorithm _matchmakingAlgorithm;
         private readonly ILogger<MatchmakingQueueListener> _logger;
         private readonly Dictionary<Guid, QueuedMatchRequestModel> _requestBuffer;
+        private long _matchCount;
 
         public GameFormat Format { get { return _format; } }
 
         public int BufferCount { get { return _requestBuffer.Count; } }
+
+        public IEnumerable<DateTime> BufferQueuedOnTimestamps
+        {
+            get { return _requestBuffer.Values.Select(x => x.QueuedOn).ToList(); }
+        }
+
+        public long MatchCount { get { return _matchCount; } }
 
         public MatchmakingQueueListener(GameFormat format, AsyncConcurrentQueue<QueuedMatchRequestModel> inQueue,
             AsyncConcurrentQueue<QueuedMatchResponseModel> outQueue, IMatchmakingAlgorithm matchmakingAlgorithm, ILogger<MatchmakingQueueListener> logger)
@@ -100,6 +110,7 @@ namespace MatcherChief.Server.Queues
             }
 
             _outQueue.EnqueueRange(responses);
+            _matchCount += result.Matches.Count();
         }
     }
 }

@@ -22,12 +22,26 @@ namespace MatcherChief.Server.Api.Controllers
         [HttpGet]
         public SystemStatusModel Status()
         {
+            var now = DateTime.Now;
+
             var queues = _queueManager.GameFormatsToQueues
-                .Select(kvp => new SystemQueueStatusModel
+                .Select(kvp => 
                 {
-                    Name = Enum.GetName(typeof(GameFormat), kvp.Key),
-                    Count = kvp.Value.Count,
-                    Buffered = _hostedService.MatchmakingQueueListeners.FirstOrDefault(x => x.Format == kvp.Key)?.BufferCount ?? 0
+                    var listener = _hostedService.MatchmakingQueueListeners.Single(x => x.Format == kvp.Key);
+                    var queuedTimes = listener.BufferQueuedOnTimestamps.Select(x => now - x).Select(x => x.TotalSeconds).ToList();
+                    return new SystemQueueStatusModel
+                    {
+                        Name = Enum.GetName(typeof(GameFormat), kvp.Key),
+                        Count = kvp.Value.Count,
+                        BufferedCount = listener.BufferCount,
+                        QueueTimes = new SystemQueueTimeAggregatesModel
+                        {
+                            Min = queuedTimes.Any() ? $"{queuedTimes.Min():N0}s" : "0s",
+                            Max = queuedTimes.Any() ? $"{queuedTimes.Max():N0}s" : "0s",
+                            Average = queuedTimes.Any() ? $"{queuedTimes.Average():N0}s" : "0s"
+                        },
+                        MatchCount = listener.MatchCount
+                    };
                 })
                 .Concat(new[]
                 {
@@ -35,16 +49,24 @@ namespace MatcherChief.Server.Api.Controllers
                     {
                         Name = "Outbound",
                         Count = _queueManager.OutboundQueue.Count,
-                        Buffered = 0
+                        BufferedCount = 0,
+                        QueueTimes = new SystemQueueTimeAggregatesModel
+                        {
+                            Min = "0s",
+                            Max = "0s",
+                            Average = "0s"
+                        },
+                        MatchCount = 0
                     }
                 })
                 .ToList();
 
             var model = new SystemStatusModel
             {
+                AllBackgroundTasksRunning = _hostedService.BackgroundTasks.All(x => !x.IsCompleted),
+                TotalMatches = queues.Sum(x => x.MatchCount),
                 Queues = queues
             };
-
             return model;
         }
     }
