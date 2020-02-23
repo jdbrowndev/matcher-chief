@@ -18,6 +18,19 @@
             }
         },
         {
+            "name": ".NET Core Launch (MatcherChief.ClientRunner)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/tools/MatcherChief.ClientRunner/bin/Debug/netcoreapp3.1/MatcherChief.ClientRunner.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/tools/MatcherChief.ClientRunner",
+            "stopAtEntry": false,
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        },
+        {
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach",

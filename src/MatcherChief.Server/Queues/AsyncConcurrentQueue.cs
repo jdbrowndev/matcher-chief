@@ -28,7 +28,11 @@ public class AsyncConcurrentQueue<T>
             _queue.Enqueue(item);
             n++;
         }
-        _semaphore.Release(n);
+
+        if (n > 0)
+        {
+            _semaphore.Release(n);
+        }
     }
 
     public async Task<T> DequeueAsync(CancellationToken cancellationToken = default(CancellationToken))
