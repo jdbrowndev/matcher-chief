@@ -54,7 +54,7 @@ namespace MatcherChief.Server.Queues
                     if (_requestBuffer.Count >= playersRequired)
                     {
                         var requests = _requestBuffer.Values
-                            .Select(x => new MatchRequest(x.Id, queuedRequest.Player, queuedRequest.Titles, queuedRequest.Modes, queuedRequest.QueuedOn))
+                            .Select(x => new MatchRequest(x.Id, x.Player, x.Titles, x.Modes, x.QueuedOn))
                             .ToList();
 
                         var result = _matchmakingAlgorithm.Matchmake(_format, requests);

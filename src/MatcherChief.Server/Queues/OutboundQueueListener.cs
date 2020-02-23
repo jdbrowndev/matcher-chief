@@ -1,7 +1,9 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using MatcherChief.Server.Queues.Auditing;
 using MatcherChief.Server.WebSockets;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace MatcherChief.Server.Queues
@@ -15,12 +17,15 @@ namespace MatcherChief.Server.Queues
     {
         private readonly IQueueManager _queueManager;
         private readonly IWebSocketResponseHandler _responseHandler;
+        private readonly IAuditLoggerFactory _auditLoggerFactory;
         private readonly ILogger<OutboundQueueListener> _logger;
 
-        public OutboundQueueListener(IQueueManager queueManager, IWebSocketResponseHandler responseHandler, ILogger<OutboundQueueListener> logger)
+        public OutboundQueueListener(IQueueManager queueManager, IWebSocketResponseHandler responseHandler, IAuditLoggerFactory auditLoggerFactory,
+            ILogger<OutboundQueueListener> logger)
         {
             _queueManager = queueManager;
             _responseHandler = responseHandler;
+            _auditLoggerFactory = auditLoggerFactory;
             _logger = logger;
         }
 
@@ -29,12 +34,15 @@ namespace MatcherChief.Server.Queues
             var outQueue = _queueManager.OutboundQueue;
             _logger.LogInformation($"OutboundQueueListener listening...");
 
+            using var auditLogger = _auditLoggerFactory.Get();
+
             while (!token.IsCancellationRequested)
             {
                 try
                 {
                     var response = await outQueue.DequeueAsync(token);
                     await _responseHandler.Handle(response);
+                    await auditLogger.LogResponse(response);
                 }
                 catch (OperationCanceledException)
                 {
