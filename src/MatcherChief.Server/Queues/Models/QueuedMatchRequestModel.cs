@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using MatcherChief.Server.Matchmaking.Models;
 using MatcherChief.Shared.Enums;
 
-namespace MatcherChief.Server.Models
+namespace MatcherChief.Server.Queues.Models
 {
     public class QueuedMatchRequestModel
     {

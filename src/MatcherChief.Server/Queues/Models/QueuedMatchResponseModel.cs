@@ -3,7 +3,7 @@ using System.Net.WebSockets;
 using System.Threading.Tasks;
 using MatcherChief.Server.Matchmaking.Models;
 
-namespace MatcherChief.Server.Models
+namespace MatcherChief.Server.Queues.Models
 {
     public class QueuedMatchResponseModel
     {

@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MatcherChief.Server.Matchmaking;
 using MatcherChief.Server.Matchmaking.Models;
-using MatcherChief.Server.Models;
+using MatcherChief.Server.Queues.Models;
 using MatcherChief.Shared;
 using MatcherChief.Shared.Enums;
 using Microsoft.Extensions.Logging;

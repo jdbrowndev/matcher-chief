@@ -5,8 +5,8 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using MatcherChief.Server.Matchmaking.Models;
-using MatcherChief.Server.Models;
 using MatcherChief.Server.Queues;
+using MatcherChief.Server.Queues.Models;
 using MatcherChief.Shared.Contract;
 
 namespace MatcherChief.Server.WebSockets

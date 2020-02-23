@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using MatcherChief.Server.Models;
+using MatcherChief.Server.Queues.Models;
 using MatcherChief.Shared.Enums;
 
 namespace MatcherChief.Server.Queues
