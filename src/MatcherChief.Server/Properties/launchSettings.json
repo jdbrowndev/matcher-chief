@@ -5,7 +5,11 @@
       "launchBrowser": false,
       "applicationUrl": "http://localhost:48689",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_URLS": "http://*:48689",
+        "Logging:LogLevel:Default": "Information",
+        "Logging:LogLevel:Microsoft": "Warning",
+        "Logging:LogLevel:Microsoft.Hosting.Lifetime": "Information"
       }
     }
   }
