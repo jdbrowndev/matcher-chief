@@ -41,8 +41,8 @@ namespace MatcherChief.ClientRunner
         private static MatchRequestModel GetRequest()
         {
             var format = _gameFormats[_random.Next(_gameFormats.Length)];
-            
-            var partySize = _random.Next(GameSetup.GameFormatsToPlayersRequired[format] + 1);
+
+            var partySize = _random.Next(GameSetup.GameFormatsToPlayersRequired[format]) + 1;
             var players = new List<PlayerModel>();
             for (var i = 0; i < partySize; i++)
             {
