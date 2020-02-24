@@ -42,7 +42,8 @@ namespace MatcherChief.ClientRunner
         {
             var format = _gameFormats[_random.Next(_gameFormats.Length)];
 
-            var partySize = _random.Next(GameSetup.GameFormatsToPlayersRequired[format]) + 1;
+            var isSolo = _random.Next(4) > 0;
+            var partySize = isSolo ? 1 : _random.Next(GameSetup.GameFormatsToPlayersRequired[format]) + 1;
             var players = new List<PlayerModel>();
             for (var i = 0; i < partySize; i++)
             {
