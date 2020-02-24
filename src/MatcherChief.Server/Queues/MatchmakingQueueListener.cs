@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -6,7 +7,6 @@ using System.Threading.Tasks;
 using MatcherChief.Server.Matchmaking;
 using MatcherChief.Server.Matchmaking.Models;
 using MatcherChief.Server.Queues.Models;
-using MatcherChief.Shared;
 using MatcherChief.Shared.Enums;
 using Microsoft.Extensions.Logging;
 
@@ -29,7 +29,7 @@ namespace MatcherChief.Server.Queues
         private readonly AsyncConcurrentQueue<QueuedMatchResponseModel> _outQueue;
         private readonly IMatchmakingAlgorithm _matchmakingAlgorithm;
         private readonly ILogger<MatchmakingQueueListener> _logger;
-        private readonly Dictionary<Guid, QueuedMatchRequestModel> _requestBuffer;
+        private readonly ConcurrentDictionary<Guid, QueuedMatchRequestModel> _requestBuffer;
         private long _matchCount;
 
         public GameFormat Format { get { return _format; } }
@@ -52,7 +52,7 @@ namespace MatcherChief.Server.Queues
             _outQueue = outQueue;
             _matchmakingAlgorithm = matchmakingAlgorithm;
             _logger = logger;
-            _requestBuffer = new Dictionary<Guid, QueuedMatchRequestModel>();
+            _requestBuffer = new ConcurrentDictionary<Guid, QueuedMatchRequestModel>();
         }
 
         public async Task Listen(CancellationToken token)
@@ -63,7 +63,7 @@ namespace MatcherChief.Server.Queues
                 try
                 {
                     var queuedRequest = await _inQueue.DequeueAsync(token);
-                    _requestBuffer.Add(queuedRequest.Id, queuedRequest);
+                    _requestBuffer.AddOrUpdate(queuedRequest.Id, queuedRequest, (k, v) => queuedRequest);
 
                     var requests = _requestBuffer.Values
                         .Select(x => new MatchRequest(x.Id, x.Players, x.Titles, x.Modes, x.QueuedOn))
@@ -100,7 +100,7 @@ namespace MatcherChief.Server.Queues
                     Match = match
                 };
                 responses.Add(response);
-                _requestBuffer.Remove(request.Id);
+                _requestBuffer.Remove(request.Id, out _);
             }
 
             _outQueue.EnqueueRange(responses);
