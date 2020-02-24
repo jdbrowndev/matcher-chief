@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
@@ -46,7 +47,7 @@ namespace MatcherChief.Server.WebSockets
                 Id = Guid.NewGuid(),
                 WebSocket = webSocket,
                 WebSocketCompletionSource = tcs,
-                Player = new Player(model.PlayerId, model.PlayerName),
+                Players = model.Players.Select(x => new Player(x.Id, x.Name)).ToList(),
                 Titles = model.GameTitles,
                 Modes = model.GameModes,
                 QueuedOn = DateTime.Now

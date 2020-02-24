@@ -20,9 +20,9 @@ namespace MatcherChief.Server.Tests.Matchmaking.PreferenceScore
         {
             var now = DateTime.Now;
 
-            var player1 = new Player("bob");
-            var player2 = new Player("sue");
-            var player3 = new Player("jerry");
+            var player1 = new[] { new Player("bob") };
+            var player2 = new[] { new Player("sue") };
+            var player3 = new[] { new Player("jerry") };
 
             var request1 = new MatchRequest(player1, new [] { GameTitle.HaloReach }, new [] { GameMode.Slayer, GameMode.Swat }, now);
             var request2 = new MatchRequest(player2, new [] { GameTitle.HaloReach, GameTitle.Halo2 }, new [] { GameMode.Slayer, GameMode.Snipers }, now);
@@ -45,9 +45,9 @@ namespace MatcherChief.Server.Tests.Matchmaking.PreferenceScore
         {
             var now = DateTime.Now;
 
-            var player1 = new Player("bob");
-            var player2 = new Player("sue");
-            var player3 = new Player("jerry");
+            var player1 = new[] { new Player("bob") };
+            var player2 = new[] { new Player("sue") };
+            var player3 = new[] { new Player("jerry") };
 
             var request1QueuedOn = now - TimeSpan.FromSeconds(2.75);
             var request1 = new MatchRequest(player1, new [] { GameTitle.HaloReach }, new [] { GameMode.Slayer, GameMode.Swat }, request1QueuedOn);

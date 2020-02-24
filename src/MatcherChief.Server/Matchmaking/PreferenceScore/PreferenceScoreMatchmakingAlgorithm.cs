@@ -30,20 +30,19 @@ namespace MatcherChief.Server.Matchmaking.PreferenceScore
 
             foreach (var preference in orderedPreferences)
             {
-                if (orderedRequests.Count < matchSize)
+                if (orderedRequests.Sum(x => x.Players.Count()) < matchSize)
                     break;
 
                 var requestGroup = new List<MatchRequest>( matchSize );
                 for (var i = orderedRequests.Count - 1; i >= 0; i--)
                 {
-                    if (i + 1 + requestGroup.Count < matchSize)
-                        break;
-
                     var request = orderedRequests[i];
                     if (HasPreference(request, preference))
                     {
-                        requestGroup.Add(request);
-                        if (requestGroup.Count == matchSize)
+                        var playerCount = requestGroup.Sum(x => x.Players.Count()) + request.Players.Count();
+                        if (playerCount <= matchSize)
+                            requestGroup.Add(request);
+                        if (playerCount == matchSize)
                         {
                             requestGroup.ForEach(x => orderedRequests.Remove(x));
 

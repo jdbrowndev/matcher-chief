@@ -65,18 +65,12 @@ namespace MatcherChief.Server.Queues
                     var queuedRequest = await _inQueue.DequeueAsync(token);
                     _requestBuffer.Add(queuedRequest.Id, queuedRequest);
 
-                    var playersRequired = GameSetup.GameFormatsToPlayersRequired[_format];
+                    var requests = _requestBuffer.Values
+                        .Select(x => new MatchRequest(x.Id, x.Players, x.Titles, x.Modes, x.QueuedOn))
+                        .ToList();
 
-                    if (_requestBuffer.Count >= playersRequired)
-                    {
-                        var requests = _requestBuffer.Values
-                            .Select(x => new MatchRequest(x.Id, x.Player, x.Titles, x.Modes, x.QueuedOn))
-                            .ToList();
-
-                        var result = _matchmakingAlgorithm.Matchmake(_format, requests);
-
-                        HandleMatchmakeResult(result);
-                    }
+                    var result = _matchmakingAlgorithm.Matchmake(_format, requests);
+                    HandleMatchmakeResult(result);
                 }
                 catch (OperationCanceledException)
                 {
@@ -102,7 +96,7 @@ namespace MatcherChief.Server.Queues
                     RequestId = queuedRequest.Id,
                     WebSocket = queuedRequest.WebSocket,
                     WebSocketCompletionSource = queuedRequest.WebSocketCompletionSource,
-                    Player = queuedRequest.Player,
+                    Players = queuedRequest.Players,
                     Match = match
                 };
                 responses.Add(response);

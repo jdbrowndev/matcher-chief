@@ -10,12 +10,6 @@ namespace MatcherChief.Shared.Contract
         public GameFormat GameFormat { get; set; }
         public GameTitle GameTitle { get; set; }
         public GameMode GameMode { get; set; }
-        public IEnumerable<MatchResponsePlayerModel> Players { get; set; }
-    }
-
-    public class MatchResponsePlayerModel
-    {
-        public Guid PlayerId { get; set; }
-        public string PlayerName { get; set; }
+        public IEnumerable<PlayerModel> Players { get; set; }
     }
 }

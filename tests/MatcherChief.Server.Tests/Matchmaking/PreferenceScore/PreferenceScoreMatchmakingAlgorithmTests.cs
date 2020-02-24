@@ -25,9 +25,9 @@ namespace MatcherChief.Server.Tests.Matchmaking.PreferenceScore
         {
             var now = DateTime.Now;
             
-            var player1 = new Player("bob");
-            var player2 = new Player("sue");
-            var player3 = new Player("jerry");
+            var player1 = new[] { new Player("bob") };
+            var player2 = new[] { new Player("sue") };
+            var player3 = new[] { new Player("jerry") };
 
             var request1 = new MatchRequest(player1, new [] { GameTitle.HaloReach }, new [] { GameMode.Slayer, GameMode.Swat }, now + TimeSpan.FromSeconds(2));
             var request2 = new MatchRequest(player2, new [] { GameTitle.HaloReach, GameTitle.Halo3 }, new [] { GameMode.Slayer, GameMode.Swat }, now + TimeSpan.FromSeconds(1));
@@ -61,9 +61,9 @@ namespace MatcherChief.Server.Tests.Matchmaking.PreferenceScore
         {
             var now = DateTime.Now;
             
-            var player1 = new Player("bob");
-            var player2 = new Player("sue");
-            var player3 = new Player("jerry");
+            var player1 = new[] { new Player("bob") };
+            var player2 = new[] { new Player("sue") };
+            var player3 = new[] { new Player("jerry") };
 
             var request1 = new MatchRequest(player1, new [] { GameTitle.HaloReach }, new [] { GameMode.Slayer, GameMode.Swat }, now + TimeSpan.FromSeconds(2));
             var request2 = new MatchRequest(player2, new [] { GameTitle.HaloReach }, new [] { GameMode.Slayer, GameMode.Swat }, now + TimeSpan.FromSeconds(3));
@@ -95,11 +95,11 @@ namespace MatcherChief.Server.Tests.Matchmaking.PreferenceScore
         {
             var now = DateTime.Now;
             
-            var player1 = new Player("bob");
-            var player2 = new Player("sue");
-            var player3 = new Player("jerry");
-            var player4 = new Player("james");
-            var player5 = new Player("mark");
+            var player1 = new[] { new Player("bob") };
+            var player2 = new[] { new Player("sue") };
+            var player3 = new[] { new Player("jerry") };
+            var player4 = new[] { new Player("james") };
+            var player5 = new[] { new Player("mark") };
 
             var request1 = new MatchRequest(player1, new [] { GameTitle.HaloReach }, new [] { GameMode.Slayer }, now);
             var request2 = new MatchRequest(player2, new [] { GameTitle.HaloReach }, new [] { GameMode.Swat }, now + TimeSpan.FromSeconds(1));
@@ -135,6 +135,63 @@ namespace MatcherChief.Server.Tests.Matchmaking.PreferenceScore
             Assert.Contains(request4, match2.Requests);
 
             Assert.Contains(request5, result.UnmatchedRequests);
+        }
+
+        [Fact]
+        public void Should_Match_Player_Party_In_Single_Request()
+        {
+            var now = DateTime.Now;
+            
+            var party1 = new[] { new Player("bob"), new Player("sue") };
+
+            var request1 = new MatchRequest(party1, new [] { GameTitle.HaloReach }, new [] { GameMode.Slayer }, now);
+
+            var scores = new Dictionary<Preference, int>
+            {
+                { new Preference(GameTitle.HaloReach, GameMode.Slayer), 1 }
+            };
+
+            _scoreCalculator.Setup(x => x.GetScores(It.IsAny<IEnumerable<MatchRequest>>())).Returns(scores);
+            var result = _sut.Matchmake(GameFormat.OneVersusOne, new [] { request1 });
+            var matches = result.Matches;
+
+            Assert.Single(matches);
+            var match1 = matches.ElementAt(0);
+            
+            Assert.Equal(GameFormat.OneVersusOne, match1.Format);
+            Assert.Equal(GameTitle.HaloReach, match1.Title);
+            Assert.Equal(GameMode.Slayer, match1.Mode);
+            Assert.Contains(request1, match1.Requests);
+        }
+
+        [Fact]
+        public void Should_Match_Player_Parties_In_Multiple_Requests()
+        {
+            var now = DateTime.Now;
+            
+            var party1 = new[] { new Player("bob"), new Player("sue") };
+            var party2 = new[] { new Player("jerry"), new Player("james") };
+
+            var request1 = new MatchRequest(party1, new [] { GameTitle.HaloReach }, new [] { GameMode.Slayer }, now);
+            var request2 = new MatchRequest(party2, new [] { GameTitle.HaloReach }, new [] { GameMode.Slayer }, now);
+
+            var scores = new Dictionary<Preference, int>
+            {
+                { new Preference(GameTitle.HaloReach, GameMode.Slayer), 2 }
+            };
+
+            _scoreCalculator.Setup(x => x.GetScores(It.IsAny<IEnumerable<MatchRequest>>())).Returns(scores);
+            var result = _sut.Matchmake(GameFormat.TwoVersusTwo, new [] { request1, request2 });
+            var matches = result.Matches;
+
+            Assert.Single(matches);
+            var match1 = matches.ElementAt(0);
+            
+            Assert.Equal(GameFormat.TwoVersusTwo, match1.Format);
+            Assert.Equal(GameTitle.HaloReach, match1.Title);
+            Assert.Equal(GameMode.Slayer, match1.Mode);
+            Assert.Contains(request1, match1.Requests);
+            Assert.Contains(request2, match1.Requests);
         }
     }
 }

@@ -41,6 +41,19 @@ namespace MatcherChief.ClientRunner
         private static MatchRequestModel GetRequest()
         {
             var format = _gameFormats[_random.Next(_gameFormats.Length)];
+            
+            var partySize = _random.Next(GameSetup.GameFormatsToPlayersRequired[format] + 1);
+            var players = new List<PlayerModel>();
+            for (var i = 0; i < partySize; i++)
+            {
+                var playerId = Guid.NewGuid();
+                var player = new PlayerModel
+                {
+                    Id = playerId,
+                    Name = $"player{playerId:N}"
+                };
+                players.Add(player);
+            }
 
             var titles = new List<GameTitle>();
             var titleChance = _random.Next(_gameTitles.Length);
@@ -63,11 +76,9 @@ namespace MatcherChief.ClientRunner
             if (!modes.Any())
                 modes.Add(gameModes.First());
 
-            var playerId = Guid.NewGuid();
             var request = new MatchRequestModel
             {
-                PlayerId = playerId,
-                PlayerName = $"player{playerId:N}",
+                Players = players,
                 GameFormat = format,
                 GameTitles = titles,
                 GameModes = modes

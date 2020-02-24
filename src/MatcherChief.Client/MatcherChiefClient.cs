@@ -35,14 +35,16 @@ namespace MatcherChief.Client
 
         private void ValidateRequest(MatchRequestModel request)
         {
-            if (request.PlayerId == Guid.Empty)
+            if (request.Players.Any(x => x.Id == Guid.Empty))
                 throw new ArgumentException("PlayerId required");
-            if (string.IsNullOrWhiteSpace(request.PlayerName))
+            if (request.Players.Any(x => string.IsNullOrWhiteSpace(x.Name)))
                 throw new ArgumentException("PlayerName required");
             if (request.GameTitles == null || !request.GameTitles.Any())
                 throw new ArgumentException("At least one GameTitle required");
             if (request.GameModes == null || !request.GameModes.Any())
                 throw new ArgumentException("At least one GameMode required");
+            if (request.Players.Count() > GameSetup.GameFormatsToPlayersRequired[request.GameFormat])
+                throw new ArgumentException("Too many players for the selected GameFormat");
             if (request.GameModes.Except(GameSetup.GameFormatsToModes[request.GameFormat]).Count() != 0)
                 throw new ArgumentException("All GameModes must be valid for the selected GameFormat");
         }

@@ -25,7 +25,7 @@ namespace MatcherChief.Server.WebSockets
                 GameFormat = response.Match.Format,
                 GameTitle = response.Match.Title,
                 GameMode = response.Match.Mode,
-                Players = response.Match.Requests.Select(x => new MatchResponsePlayerModel { PlayerId = x.Player.Id, PlayerName = x.Player.Name })
+                Players = response.Match.Requests.SelectMany(x => x.Players.Select(p => new PlayerModel { Id = p.Id, Name = p.Name }))
             };
 
             var json = JsonSerializer.Serialize(responseModel);
