@@ -35,8 +35,7 @@ namespace MatcherChief.Server
         {
             var webSocketOptions = new WebSocketOptions() 
             {
-                KeepAliveInterval = TimeSpan.FromSeconds(120),
-                ReceiveBufferSize = 1024 * 4
+                KeepAliveInterval = TimeSpan.FromSeconds(120)
             };
 
             app.UseWebSockets(webSocketOptions);
