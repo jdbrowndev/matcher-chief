@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
+namespace MatcherChief.Server.Queues;
+
 public class AsyncConcurrentQueue<T>
 {
     private readonly SemaphoreSlim _semaphore;

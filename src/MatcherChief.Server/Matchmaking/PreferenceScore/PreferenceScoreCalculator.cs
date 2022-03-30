@@ -2,39 +2,38 @@ using System;
 using System.Collections.Generic;
 using MatcherChief.Server.Matchmaking.Models;
 
-namespace MatcherChief.Server.Matchmaking.PreferenceScore
+namespace MatcherChief.Server.Matchmaking.PreferenceScore;
+
+public interface IPreferenceScoreCalculator
 {
-    public interface IPreferenceScoreCalculator
-    {
-        Dictionary<Preference, int> GetScores(IEnumerable<MatchRequest> requests);
-    }
+    Dictionary<Preference, int> GetScores(IEnumerable<MatchRequest> requests);
+}
 
-    public class PreferenceScoreCalculator : IPreferenceScoreCalculator
-    {
-        public const int SECONDS_PER_SCORE_WEIGHT_INCREASE = 5;
+public class PreferenceScoreCalculator : IPreferenceScoreCalculator
+{
+    public const int SECONDS_PER_SCORE_WEIGHT_INCREASE = 5;
 
-        public Dictionary<Preference, int> GetScores(IEnumerable<MatchRequest> requests)
+    public Dictionary<Preference, int> GetScores(IEnumerable<MatchRequest> requests)
+    {
+        var now = DateTime.Now;
+        var scores = new Dictionary<Preference, int>();
+
+        foreach (var request in requests)
         {
-            var now = DateTime.Now;
-            var scores = new Dictionary<Preference, int>();
+            var preferences = new List<Preference>();
+            foreach (var title in request.Titles)
+                foreach (var mode in request.Modes)
+                    preferences.Add(new Preference(title, mode));
 
-            foreach (var request in requests)
-            {
-                var preferences = new List<Preference>();
-                foreach (var title in request.Titles)
-                    foreach (var mode in request.Modes)
-                        preferences.Add(new Preference(title, mode));
-
-                var weight = 1 + now.Subtract(request.QueuedOn).Seconds / SECONDS_PER_SCORE_WEIGHT_INCREASE;
-                
-                foreach (var preference in preferences)
-                    if (scores.ContainsKey(preference))
-                        scores[preference] += weight;
-                    else
-                        scores.Add(preference, weight);
-            }
-
-            return scores;
+            var weight = 1 + now.Subtract(request.QueuedOn).Seconds / SECONDS_PER_SCORE_WEIGHT_INCREASE;
+            
+            foreach (var preference in preferences)
+                if (scores.ContainsKey(preference))
+                    scores[preference] += weight;
+                else
+                    scores.Add(preference, weight);
         }
+
+        return scores;
     }
 }

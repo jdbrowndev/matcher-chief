@@ -8,40 +8,39 @@ using MatcherChief.Server.Queues.Models;
 using MatcherChief.Shared;
 using MatcherChief.Shared.Contract;
 
-namespace MatcherChief.Server.WebSockets
+namespace MatcherChief.Server.WebSockets;
+
+public interface IWebSocketResponseHandler
 {
-    public interface IWebSocketResponseHandler
-    {
-        Task Handle(QueuedMatchResponseModel response);
-    }
+    Task Handle(QueuedMatchResponseModel response);
+}
 
-    public class WebSocketResponseHandler : IWebSocketResponseHandler
+public class WebSocketResponseHandler : IWebSocketResponseHandler
+{
+    public async Task Handle(QueuedMatchResponseModel response)
     {
-        public async Task Handle(QueuedMatchResponseModel response)
+        var responseModel = new MatchResponseModel
         {
-            var responseModel = new MatchResponseModel
-            {
-                MatchId = response.Match.Id,
-                GameFormat = response.Match.Format,
-                GameTitle = response.Match.Title,
-                GameMode = response.Match.Mode,
-                Players = response.Match.Requests.SelectMany(x => x.Players.Select(p => new PlayerModel { Id = p.Id, Name = p.Name }))
-            };
+            MatchId = response.Match.Id,
+            GameFormat = response.Match.Format,
+            GameTitle = response.Match.Title,
+            GameMode = response.Match.Mode,
+            Players = response.Match.Requests.SelectMany(x => x.Players.Select(p => new PlayerModel { Id = p.Id, Name = p.Name }))
+        };
 
-            var json = JsonSerializer.Serialize(responseModel);
-            var bytes = Encoding.UTF8.GetBytes(json);
-            var bufferSize = 1024 * 4;
-            var segments = ArraySegmentHelper.Segment(bytes, bufferSize);
+        var json = JsonSerializer.Serialize(responseModel);
+        var bytes = Encoding.UTF8.GetBytes(json);
+        var bufferSize = 1024 * 4;
+        var segments = ArraySegmentHelper.Segment(bytes, bufferSize);
 
-            var webSocket = response.WebSocket;
-            var tcs = response.WebSocketCompletionSource;
-            foreach (var segment in segments)
-            {
-                var eom = segment == segments.Last();
-                await webSocket.SendAsync(segment, WebSocketMessageType.Text, eom, CancellationToken.None);
-            }
-
-            tcs.TrySetResult(new object());
+        var webSocket = response.WebSocket;
+        var tcs = response.WebSocketCompletionSource;
+        foreach (var segment in segments)
+        {
+            var eom = segment == segments.Last();
+            await webSocket.SendAsync(segment, WebSocketMessageType.Text, eom, CancellationToken.None);
         }
+
+        tcs.TrySetResult(new object());
     }
 }

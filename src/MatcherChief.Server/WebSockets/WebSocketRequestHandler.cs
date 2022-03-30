@@ -10,49 +10,48 @@ using MatcherChief.Server.Queues;
 using MatcherChief.Server.Queues.Models;
 using MatcherChief.Shared.Contract;
 
-namespace MatcherChief.Server.WebSockets
+namespace MatcherChief.Server.WebSockets;
+
+public interface IWebSocketRequestHandler
 {
-    public interface IWebSocketRequestHandler
+    Task Handle(WebSocket socket, TaskCompletionSource<object> tcs);
+}
+
+public class WebSocketRequestHandler : IWebSocketRequestHandler
+{
+    private readonly IQueueManager _queueManager;
+
+    public WebSocketRequestHandler(IQueueManager queueManager)
     {
-        Task Handle(WebSocket socket, TaskCompletionSource<object> tcs);
+        _queueManager = queueManager;
     }
 
-    public class WebSocketRequestHandler : IWebSocketRequestHandler
+    public async Task Handle(WebSocket webSocket, TaskCompletionSource<object> tcs)
     {
-        private readonly IQueueManager _queueManager;
+        var sb = new StringBuilder();
+        var buffer = new byte[1024 * 4];
+        WebSocketReceiveResult receiveResult;
 
-        public WebSocketRequestHandler(IQueueManager queueManager)
+        do
         {
-            _queueManager = queueManager;
-        }
+            receiveResult = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+            sb.Append(Encoding.UTF8.GetString(buffer).TrimEnd('\0'));
+        } while (!receiveResult.EndOfMessage);
 
-        public async Task Handle(WebSocket webSocket, TaskCompletionSource<object> tcs)
+        var request = sb.ToString();
+        var model = JsonSerializer.Deserialize<MatchRequestModel>(request);
+
+        var queue = _queueManager.GameFormatsToQueues[model.GameFormat];
+        var queuedMatchRequest = new QueuedMatchRequestModel
         {
-            var sb = new StringBuilder();
-            var buffer = new byte[1024 * 4];
-            WebSocketReceiveResult receiveResult;
-
-            do
-            {
-                receiveResult = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-                sb.Append(Encoding.UTF8.GetString(buffer).TrimEnd('\0'));
-            } while (!receiveResult.EndOfMessage);
-
-            var request = sb.ToString();
-            var model = JsonSerializer.Deserialize<MatchRequestModel>(request);
-
-            var queue = _queueManager.GameFormatsToQueues[model.GameFormat];
-            var queuedMatchRequest = new QueuedMatchRequestModel
-            {
-                Id = Guid.NewGuid(),
-                WebSocket = webSocket,
-                WebSocketCompletionSource = tcs,
-                Players = model.Players.Select(x => new Player(x.Id, x.Name)).ToList(),
-                Titles = model.GameTitles,
-                Modes = model.GameModes,
-                QueuedOn = DateTime.Now
-            };
-            queue.Enqueue(queuedMatchRequest);
-        }
+            Id = Guid.NewGuid(),
+            WebSocket = webSocket,
+            WebSocketCompletionSource = tcs,
+            Players = model.Players.Select(x => new Player(x.Id, x.Name)).ToList(),
+            Titles = model.GameTitles,
+            Modes = model.GameModes,
+            QueuedOn = DateTime.Now
+        };
+        queue.Enqueue(queuedMatchRequest);
     }
 }
