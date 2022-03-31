@@ -29,7 +29,7 @@ The server will log successful matches at the Debug level if enabled. It also ha
 
 # Docker
 
-The server can be built and run via the included Dockerfile.
+The server and client runner can be built via the included Dockerfiles.
 
 # License
 

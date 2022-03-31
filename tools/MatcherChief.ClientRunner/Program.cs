@@ -2,6 +2,7 @@
 using MatcherChief.Shared;
 using MatcherChief.Shared.Contract;
 using MatcherChief.Shared.Enums;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,26 +17,34 @@ public class Program
 	private static GameFormat[] _gameFormats = (GameFormat[])Enum.GetValues(typeof(GameFormat));
 	private static GameTitle[] _gameTitles = (GameTitle[])Enum.GetValues(typeof(GameTitle));
 
-	public static async Task Main(string[] args)
+	public static async Task Main()
 	{
-		var msDelay = 50;
-		if (args.Length > 0)
-			msDelay = int.Parse(args[0]);
+		var config = GetConfig();
+		var serverUrl = config["ClientRunner:ServerUrl"];
+		var msDelay = int.Parse(config["ClientRunner:ConnectionDelay"]);
 
-		var uriString = "ws://localhost:48689";
-		if (args.Length > 1)
-			uriString = args[1];
+		Console.WriteLine($"ClientRunner starting up... (ServerUrl={serverUrl}, ConnectionDelay={msDelay})");
 
-		var uri = new Uri(uriString);
+		var uri = new Uri(serverUrl);
+		var client = new MatcherChiefClient(uri);
 		var tasks = new List<Task>();
 		while (true)
 		{
-			var client = new MatcherChiefClient(uri);
 			var request = GetRequest();
 			var responseTask = client.GetMatch(request, CancellationToken.None);
 			tasks = tasks.Where(x => !x.IsCompleted).Concat(new[] { responseTask }).ToList();
 			await Task.Delay(msDelay);
 		}
+	}
+
+	private static IConfiguration GetConfig()
+	{
+		var config = new ConfigurationBuilder()
+			.AddJsonFile("appsettings.json", true)
+			.AddEnvironmentVariables()
+			.Build();
+
+		return config;
 	}
 
 	private static MatchRequestModel GetRequest()
