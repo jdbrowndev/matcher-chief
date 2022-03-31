@@ -1,34 +1,72 @@
+using System;
 using System.IO;
+using MatcherChief.Server.HostedService;
+using MatcherChief.Server.Matchmaking;
+using MatcherChief.Server.Matchmaking.PreferenceScore;
+using MatcherChief.Server.Queues;
+using MatcherChief.Server.Queues.Auditing;
+using MatcherChief.Server.WebSockets;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Serilog;
 
-namespace MatcherChief.Server;
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateBootstrapLogger();
 
-public class Program
+try
 {
-    public static void Main(string[] args)
+    var builder = WebApplication.CreateBuilder(args);
+    builder.WebHost.UseKestrel();
+    builder.WebHost.UseContentRoot(Directory.GetCurrentDirectory());
+    builder.Configuration.AddEnvironmentVariables();
+    builder.Host.UseDefaultServiceProvider((context, options) =>
     {
-        CreateWebHostBuilder(args).Build().Run();
-    }
+        options.ValidateScopes = context.HostingEnvironment.IsDevelopment();
+    });
+    builder.Host.UseSerilog((context, config) => config.WriteTo.Console().ReadFrom.Configuration(context.Configuration));
 
-    public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-        new WebHostBuilder()
-            .UseKestrel()
-            .UseContentRoot(Directory.GetCurrentDirectory())
-            .ConfigureAppConfiguration((context, config) =>
-            {
-                config.AddEnvironmentVariables();
-            })
-            .ConfigureLogging((context, logging) =>
-            {
-                logging.AddConfiguration(context.Configuration.GetSection("Logging"));
-                logging.AddConsole();
-            })
-            .UseDefaultServiceProvider((context, options) =>
-            {
-                options.ValidateScopes = context.HostingEnvironment.IsDevelopment();
-            })
-            .UseStartup<Startup>();
+    var services = builder.Services;
+    services.AddTransient<IMatchmakingAlgorithm, PreferenceScoreMatchmakingAlgorithm>();
+    services.AddTransient<IPreferenceScoreCalculator, PreferenceScoreCalculator>();
+    services.AddTransient<IMatchmakingQueueListenerFactory, MatchmakingQueueListenerFactory>();
+    services.AddTransient<IAuditLoggerFactory, AuditLoggerFactory>();
+    services.AddTransient<IWebSocketRequestHandler, WebSocketRequestHandler>();
+    services.AddTransient<IWebSocketResponseHandler, WebSocketResponseHandler>();
+
+    services.AddHostedService<MatchmakingHostedService>();
+    services.AddTransient<IHostedServiceAccessor<MatchmakingHostedService>, HostedServiceAccessor<MatchmakingHostedService>>();
+
+    services.AddSingleton<IQueueManager, QueueManager>();
+    services.AddSingleton<IOutboundQueueListener, OutboundQueueListener>();
+
+    services.AddControllers();
+
+    var app = builder.Build();
+    var webSocketOptions = new WebSocketOptions()
+    {
+        KeepAliveInterval = TimeSpan.FromSeconds(120)
+    };
+
+    app.UseWebSockets(webSocketOptions);
+    app.UseMiddleware<WebSocketHandlerMiddleware>();
+
+    app.UseRouting();
+    app.UseEndpoints(endpoints =>
+    {
+        endpoints.MapControllerRoute("default", "/api/{controller}/{action}/{id?}");
+    });
+
+    app.Run();
+}
+catch (Exception exception)
+{
+    Log.Fatal(exception, "Unhandled fatal exception");
+}
+finally
+{
+    Log.CloseAndFlush();
 }
