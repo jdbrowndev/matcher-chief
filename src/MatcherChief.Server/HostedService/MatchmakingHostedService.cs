@@ -1,64 +1,64 @@
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using MatcherChief.Server.Queues;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MatcherChief.Server.HostedService;
 
 public class MatchmakingHostedService : BackgroundService
 {
-    private readonly IQueueManager _queueManager;
-    private readonly IMatchmakingQueueListenerFactory _matchmakingQueueListenerFactory;
-    private readonly IOutboundQueueListener _outboundQueueListener;
-    private readonly ILogger<MatchmakingHostedService> _logger;
+	private readonly IQueueManager _queueManager;
+	private readonly IMatchmakingQueueListenerFactory _matchmakingQueueListenerFactory;
+	private readonly IOutboundQueueListener _outboundQueueListener;
+	private readonly ILogger<MatchmakingHostedService> _logger;
 
-    public IEnumerable<IMatchmakingQueueListener> MatchmakingQueueListeners { get; private set; }
+	public IEnumerable<IMatchmakingQueueListener> MatchmakingQueueListeners { get; private set; }
 
-    public IOutboundQueueListener OutboundQueueListener { get; private set; }
-    
-    public IEnumerable<Task> BackgroundTasks { get; private set; }
+	public IOutboundQueueListener OutboundQueueListener { get; private set; }
 
-    public MatchmakingHostedService(IQueueManager queueManager, IMatchmakingQueueListenerFactory matchmakingQueueListenerFactory, IOutboundQueueListener outboundQueueListener,
-        ILogger<MatchmakingHostedService> logger)
-    {
-        _queueManager = queueManager;
-        _matchmakingQueueListenerFactory = matchmakingQueueListenerFactory;
-        _outboundQueueListener = outboundQueueListener;
-        _logger = logger;
-    }
+	public IEnumerable<Task> BackgroundTasks { get; private set; }
 
-    public override async Task StartAsync(CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("Matchmaking starting...");
-        await base.StartAsync(cancellationToken);
-    }
+	public MatchmakingHostedService(IQueueManager queueManager, IMatchmakingQueueListenerFactory matchmakingQueueListenerFactory, IOutboundQueueListener outboundQueueListener,
+		ILogger<MatchmakingHostedService> logger)
+	{
+		_queueManager = queueManager;
+		_matchmakingQueueListenerFactory = matchmakingQueueListenerFactory;
+		_outboundQueueListener = outboundQueueListener;
+		_logger = logger;
+	}
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-    {
-        var matchmakingQueueListeners = new List<IMatchmakingQueueListener>();
-        var tasks = new List<Task>();
+	public override async Task StartAsync(CancellationToken cancellationToken)
+	{
+		_logger.LogInformation("Matchmaking starting...");
+		await base.StartAsync(cancellationToken);
+	}
 
-        foreach (var format in _queueManager.GameFormatsToQueues.Keys)
-        {
-            var listener = _matchmakingQueueListenerFactory.Get(format);
-            matchmakingQueueListeners.Add(listener);
-            tasks.Add(listener.Listen(stoppingToken));
-        }
+	protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+	{
+		var matchmakingQueueListeners = new List<IMatchmakingQueueListener>();
+		var tasks = new List<Task>();
 
-        tasks.Add(_outboundQueueListener.Listen(stoppingToken));
+		foreach (var format in _queueManager.GameFormatsToQueues.Keys)
+		{
+			var listener = _matchmakingQueueListenerFactory.Get(format);
+			matchmakingQueueListeners.Add(listener);
+			tasks.Add(listener.Listen(stoppingToken));
+		}
 
-        MatchmakingQueueListeners = matchmakingQueueListeners;
-        OutboundQueueListener = _outboundQueueListener;
-        BackgroundTasks = tasks;
+		tasks.Add(_outboundQueueListener.Listen(stoppingToken));
 
-        await Task.WhenAll(BackgroundTasks);
-    }
+		MatchmakingQueueListeners = matchmakingQueueListeners;
+		OutboundQueueListener = _outboundQueueListener;
+		BackgroundTasks = tasks;
 
-    public override async Task StopAsync(CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("Matchmaking stopping...");
-        await base.StopAsync(cancellationToken);
-    }
+		await Task.WhenAll(BackgroundTasks);
+	}
+
+	public override async Task StopAsync(CancellationToken cancellationToken)
+	{
+		_logger.LogInformation("Matchmaking stopping...");
+		await base.StopAsync(cancellationToken);
+	}
 }

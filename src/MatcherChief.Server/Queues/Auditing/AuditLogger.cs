@@ -1,10 +1,10 @@
-using System;
-using System.Text.Json;
 using MatcherChief.Server.Queues.Models;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
+using System;
+using System.Text.Json;
 
 namespace MatcherChief.Server.Queues.Auditing;
 
