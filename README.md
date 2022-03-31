@@ -25,9 +25,11 @@ cd tools/MatcherChief.ClientRunner
 dotnet run
 ```
 
-When running in Development mode, the server will write an `audit.json` file to its working directory. One line is written per successful match.
+The server will log successful matches at the Debug level if enabled. It also has an endpoint `GET /api/system/status` that returns a server status overview.
 
-The server also has an endpoint `GET /api/system/status` that returns a server status overview.
+# Docker
+
+The server can be built and run via the included Dockerfile.
 
 # License
 

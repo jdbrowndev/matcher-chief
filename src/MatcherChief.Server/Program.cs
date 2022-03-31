@@ -33,7 +33,7 @@ try
     services.AddTransient<IMatchmakingAlgorithm, PreferenceScoreMatchmakingAlgorithm>();
     services.AddTransient<IPreferenceScoreCalculator, PreferenceScoreCalculator>();
     services.AddTransient<IMatchmakingQueueListenerFactory, MatchmakingQueueListenerFactory>();
-    services.AddTransient<IAuditLoggerFactory, AuditLoggerFactory>();
+    services.AddTransient<IAuditLogger, AuditLogger>();
     services.AddTransient<IWebSocketRequestHandler, WebSocketRequestHandler>();
     services.AddTransient<IWebSocketResponseHandler, WebSocketResponseHandler>();
 

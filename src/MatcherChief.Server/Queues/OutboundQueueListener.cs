@@ -16,15 +16,15 @@ public class OutboundQueueListener : IOutboundQueueListener
 {
     private readonly IQueueManager _queueManager;
     private readonly IWebSocketResponseHandler _responseHandler;
-    private readonly IAuditLoggerFactory _auditLoggerFactory;
+    private readonly IAuditLogger _auditLogger;
     private readonly ILogger<OutboundQueueListener> _logger;
 
-    public OutboundQueueListener(IQueueManager queueManager, IWebSocketResponseHandler responseHandler, IAuditLoggerFactory auditLoggerFactory,
+    public OutboundQueueListener(IQueueManager queueManager, IWebSocketResponseHandler responseHandler, IAuditLogger auditLogger,
         ILogger<OutboundQueueListener> logger)
     {
         _queueManager = queueManager;
         _responseHandler = responseHandler;
-        _auditLoggerFactory = auditLoggerFactory;
+        _auditLogger = auditLogger;
         _logger = logger;
     }
 
@@ -33,15 +33,13 @@ public class OutboundQueueListener : IOutboundQueueListener
         var outQueue = _queueManager.OutboundQueue;
         _logger.LogInformation($"OutboundQueueListener listening...");
 
-        using var auditLogger = _auditLoggerFactory.Get();
-
         while (!token.IsCancellationRequested)
         {
             try
             {
                 var response = await outQueue.DequeueAsync(token);
                 await _responseHandler.Handle(response);
-                await auditLogger.LogResponse(response);
+                _auditLogger.LogResponse(response);
             }
             catch (OperationCanceledException)
             {
