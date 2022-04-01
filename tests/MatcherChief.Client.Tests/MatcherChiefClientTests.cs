@@ -117,6 +117,23 @@ public class MatcherChiefClientTests
 	}
 
 	[Fact]
+	public async Task Should_Restrict_GameTitles_To_The_Selected_GameFormat()
+	{
+		var player1 = new PlayerModel { Id = Guid.NewGuid(), Name = "bob" };
+		var player2 = new PlayerModel { Id = Guid.NewGuid(), Name = "sue" };
+
+		var request = new MatchRequestModel
+		{
+			Players = new[] { player1, player2 },
+			GameFormat = GameFormat.FourPlayerFirefight,
+			GameTitles = new[] { GameTitle.HaloCE },
+			GameModes = new[] { GameMode.FirefightArcade }
+		};
+
+		await Assert.ThrowsAsync<ArgumentException>(() => _sut.GetMatch(request, CancellationToken.None));
+	}
+
+	[Fact]
 	public async Task Should_Restrict_GameModes_To_The_Selected_GameFormat()
 	{
 		var player1 = new PlayerModel { Id = Guid.NewGuid(), Name = "bob" };

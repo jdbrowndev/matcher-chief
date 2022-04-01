@@ -8,6 +8,7 @@ namespace MatcherChief.Shared.Enums
 		EightPlayerFFA,
 		TwelvePlayerFFA,
 		EightVersusEight,
-		Firefight
+		TwoPlayerFirefight,
+		FourPlayerFirefight
 	}
 }

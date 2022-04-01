@@ -47,6 +47,8 @@ namespace MatcherChief.Client
 				throw new ArgumentException("At least one GameTitle required");
 			if (request.GameModes == null || !request.GameModes.Any())
 				throw new ArgumentException("At least one GameMode required");
+			if (request.GameTitles.Except(GameSetup.GameFormatsToTitles[request.GameFormat]).Count() != 0)
+				throw new ArgumentException("All GameTitles must be valid for the selected GameFormat");
 			if (request.GameModes.Except(GameSetup.GameFormatsToModes[request.GameFormat]).Count() != 0)
 				throw new ArgumentException("All GameModes must be valid for the selected GameFormat");
 		}

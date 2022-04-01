@@ -7,6 +7,7 @@ namespace MatcherChief.Shared.Enums
 		Halo2,
 		Halo2Anniversary,
 		Halo3,
+		Halo3ODST,
 		Halo4
 	}
 }

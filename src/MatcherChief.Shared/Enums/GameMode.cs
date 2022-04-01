@@ -11,7 +11,10 @@ namespace MatcherChief.Shared.Enums
 		Snipers,
 		Infection,
 		Heavies,
+		FirefightHeroic,
 		FirefightArcade,
-		FirefightLimited
+		FirefightScoreAttack,
+		FirefightBlam,
+		FirefightSniper
 	}
 }

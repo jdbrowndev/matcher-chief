@@ -15,7 +15,6 @@ public class Program
 {
 	private static Random _random = new Random();
 	private static GameFormat[] _gameFormats = (GameFormat[])Enum.GetValues(typeof(GameFormat));
-	private static GameTitle[] _gameTitles = (GameTitle[])Enum.GetValues(typeof(GameTitle));
 
 	public static async Task Main()
 	{
@@ -66,14 +65,15 @@ public class Program
 		}
 
 		var titles = new List<GameTitle>();
-		var titleChance = _random.Next(_gameTitles.Length);
-		foreach (var title in _gameTitles)
+		var gameTitles = GameSetup.GameFormatsToTitles[format];
+		var titleChance = _random.Next(gameTitles.Count());
+		foreach (var title in gameTitles)
 		{
 			if (_random.Next(titleChance) == 0)
 				titles.Add(title);
 		}
 		if (!titles.Any())
-			titles.Add(_gameTitles.First());
+			titles.Add(gameTitles.First());
 
 		var modes = new List<GameMode>();
 		var gameModes = GameSetup.GameFormatsToModes[format];
