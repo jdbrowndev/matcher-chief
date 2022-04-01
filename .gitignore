@@ -2,3 +2,4 @@ bin
 obj
 audit.json
 .vs
+.vscode
