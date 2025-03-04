@@ -57,7 +57,7 @@ public class MatchmakingQueueListener : IMatchmakingQueueListener
 
 	public async Task Listen(CancellationToken token)
 	{
-		_logger.LogInformation($"MatchmakingQueueListener ({_formatName}) listening...");
+		_logger.LogInformation("MatchmakingQueueListener ({FormatName}) listening...", _formatName);
 		while (!token.IsCancellationRequested)
 		{
 			try
@@ -74,11 +74,11 @@ public class MatchmakingQueueListener : IMatchmakingQueueListener
 			}
 			catch (OperationCanceledException)
 			{
-				_logger.LogInformation($"MatchmakingQueueListener ({_formatName}) shutting down...");
+				_logger.LogInformation("MatchmakingQueueListener ({FormatName}) shutting down...", _formatName);
 			}
 			catch (Exception e)
 			{
-				_logger.LogError(e, $"MatchmakingQueueListener ({_formatName}) error");
+				_logger.LogError(e, "MatchmakingQueueListener ({FormatName}) error", _formatName);
 			}
 		}
 	}
