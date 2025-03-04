@@ -55,10 +55,7 @@ try
 	app.UseMiddleware<WebSocketHandlerMiddleware>();
 
 	app.UseRouting();
-	app.UseEndpoints(endpoints =>
-	{
-		endpoints.MapControllerRoute("default", "/api/{controller}/{action}/{id?}");
-	});
+	app.MapControllerRoute("default", "/api/{controller}/{action}/{id?}");
 
 	app.Run();
 }

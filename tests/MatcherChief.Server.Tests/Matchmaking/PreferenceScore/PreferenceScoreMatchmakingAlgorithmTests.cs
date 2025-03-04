@@ -29,9 +29,9 @@ public class PreferenceScoreMatchmakingAlgorithmTests
 		var player2 = new[] { new Player("sue") };
 		var player3 = new[] { new Player("jerry") };
 
-		var request1 = new MatchRequest(player1, new[] { GameTitle.HaloReach }, new[] { GameMode.Slayer, GameMode.Swat }, now + TimeSpan.FromSeconds(2));
-		var request2 = new MatchRequest(player2, new[] { GameTitle.HaloReach, GameTitle.Halo3 }, new[] { GameMode.Slayer, GameMode.Swat }, now + TimeSpan.FromSeconds(1));
-		var request3 = new MatchRequest(player3, new[] { GameTitle.HaloReach }, new[] { GameMode.Slayer }, now);
+		var request1 = new MatchRequest(player1, [GameTitle.HaloReach], [GameMode.Slayer, GameMode.Swat], now + TimeSpan.FromSeconds(2));
+		var request2 = new MatchRequest(player2, [GameTitle.HaloReach, GameTitle.Halo3], [GameMode.Slayer, GameMode.Swat], now + TimeSpan.FromSeconds(1));
+		var request3 = new MatchRequest(player3, [GameTitle.HaloReach], [GameMode.Slayer], now);
 
 		var scores = new Dictionary<Preference, int>
 		{
@@ -42,7 +42,7 @@ public class PreferenceScoreMatchmakingAlgorithmTests
 		};
 
 		_scoreCalculator.Setup(x => x.GetScores(It.IsAny<IEnumerable<MatchRequest>>())).Returns(scores);
-		var result = _sut.Matchmake(GameFormat.OneVersusOne, new[] { request1, request2, request3 });
+		var result = _sut.Matchmake(GameFormat.OneVersusOne, [request1, request2, request3]);
 
 		Assert.Single(result.Matches);
 		var match = result.Matches.Single();
@@ -65,9 +65,9 @@ public class PreferenceScoreMatchmakingAlgorithmTests
 		var player2 = new[] { new Player("sue") };
 		var player3 = new[] { new Player("jerry") };
 
-		var request1 = new MatchRequest(player1, new[] { GameTitle.HaloReach }, new[] { GameMode.Slayer, GameMode.Swat }, now + TimeSpan.FromSeconds(2));
-		var request2 = new MatchRequest(player2, new[] { GameTitle.HaloReach }, new[] { GameMode.Slayer, GameMode.Swat }, now + TimeSpan.FromSeconds(3));
-		var request3 = new MatchRequest(player3, new[] { GameTitle.HaloReach }, new[] { GameMode.Slayer }, now);
+		var request1 = new MatchRequest(player1, [GameTitle.HaloReach], [GameMode.Slayer, GameMode.Swat], now + TimeSpan.FromSeconds(2));
+		var request2 = new MatchRequest(player2, [GameTitle.HaloReach], [GameMode.Slayer, GameMode.Swat], now + TimeSpan.FromSeconds(3));
+		var request3 = new MatchRequest(player3, [GameTitle.HaloReach], [GameMode.Slayer], now);
 
 		var scores = new Dictionary<Preference, int>
 		{
@@ -76,7 +76,7 @@ public class PreferenceScoreMatchmakingAlgorithmTests
 		};
 
 		_scoreCalculator.Setup(x => x.GetScores(It.IsAny<IEnumerable<MatchRequest>>())).Returns(scores);
-		var result = _sut.Matchmake(GameFormat.OneVersusOne, new[] { request1, request2, request3 });
+		var result = _sut.Matchmake(GameFormat.OneVersusOne, [request1, request2, request3]);
 
 		Assert.Single(result.Matches);
 		var match = result.Matches.Single();
@@ -101,11 +101,11 @@ public class PreferenceScoreMatchmakingAlgorithmTests
 		var player4 = new[] { new Player("james") };
 		var player5 = new[] { new Player("mark") };
 
-		var request1 = new MatchRequest(player1, new[] { GameTitle.HaloReach }, new[] { GameMode.Slayer }, now);
-		var request2 = new MatchRequest(player2, new[] { GameTitle.HaloReach }, new[] { GameMode.Swat }, now + TimeSpan.FromSeconds(1));
-		var request3 = new MatchRequest(player3, new[] { GameTitle.HaloReach }, new[] { GameMode.Slayer }, now + TimeSpan.FromSeconds(2));
-		var request4 = new MatchRequest(player4, new[] { GameTitle.HaloReach }, new[] { GameMode.Swat }, now + TimeSpan.FromSeconds(3));
-		var request5 = new MatchRequest(player5, new[] { GameTitle.HaloReach }, new[] { GameMode.Slayer }, now + TimeSpan.FromSeconds(4));
+		var request1 = new MatchRequest(player1, [GameTitle.HaloReach], [GameMode.Slayer], now);
+		var request2 = new MatchRequest(player2, [GameTitle.HaloReach], [GameMode.Swat], now + TimeSpan.FromSeconds(1));
+		var request3 = new MatchRequest(player3, [GameTitle.HaloReach], [GameMode.Slayer], now + TimeSpan.FromSeconds(2));
+		var request4 = new MatchRequest(player4, [GameTitle.HaloReach], [GameMode.Swat], now + TimeSpan.FromSeconds(3));
+		var request5 = new MatchRequest(player5, [GameTitle.HaloReach], [GameMode.Slayer], now + TimeSpan.FromSeconds(4));
 
 		var scores = new Dictionary<Preference, int>
 		{
@@ -114,7 +114,7 @@ public class PreferenceScoreMatchmakingAlgorithmTests
 		};
 
 		_scoreCalculator.Setup(x => x.GetScores(It.IsAny<IEnumerable<MatchRequest>>())).Returns(scores);
-		var result = _sut.Matchmake(GameFormat.OneVersusOne, new[] { request1, request2, request3, request4, request5 });
+		var result = _sut.Matchmake(GameFormat.OneVersusOne, [request1, request2, request3, request4, request5]);
 		var matches = result.Matches;
 
 		Assert.Equal(2, matches.Count());
@@ -144,7 +144,7 @@ public class PreferenceScoreMatchmakingAlgorithmTests
 
 		var party1 = new[] { new Player("bob"), new Player("sue") };
 
-		var request1 = new MatchRequest(party1, new[] { GameTitle.HaloReach }, new[] { GameMode.Slayer }, now);
+		var request1 = new MatchRequest(party1, [GameTitle.HaloReach], [GameMode.Slayer], now);
 
 		var scores = new Dictionary<Preference, int>
 		{
@@ -152,7 +152,7 @@ public class PreferenceScoreMatchmakingAlgorithmTests
 		};
 
 		_scoreCalculator.Setup(x => x.GetScores(It.IsAny<IEnumerable<MatchRequest>>())).Returns(scores);
-		var result = _sut.Matchmake(GameFormat.OneVersusOne, new[] { request1 });
+		var result = _sut.Matchmake(GameFormat.OneVersusOne, [request1]);
 		var matches = result.Matches;
 
 		Assert.Single(matches);
@@ -172,8 +172,8 @@ public class PreferenceScoreMatchmakingAlgorithmTests
 		var party1 = new[] { new Player("bob"), new Player("sue") };
 		var party2 = new[] { new Player("jerry"), new Player("james") };
 
-		var request1 = new MatchRequest(party1, new[] { GameTitle.HaloReach }, new[] { GameMode.Slayer }, now);
-		var request2 = new MatchRequest(party2, new[] { GameTitle.HaloReach }, new[] { GameMode.Slayer }, now);
+		var request1 = new MatchRequest(party1, [GameTitle.HaloReach], [GameMode.Slayer], now);
+		var request2 = new MatchRequest(party2, [GameTitle.HaloReach], [GameMode.Slayer], now);
 
 		var scores = new Dictionary<Preference, int>
 		{
@@ -181,7 +181,7 @@ public class PreferenceScoreMatchmakingAlgorithmTests
 		};
 
 		_scoreCalculator.Setup(x => x.GetScores(It.IsAny<IEnumerable<MatchRequest>>())).Returns(scores);
-		var result = _sut.Matchmake(GameFormat.TwoVersusTwo, new[] { request1, request2 });
+		var result = _sut.Matchmake(GameFormat.TwoVersusTwo, [request1, request2]);
 		var matches = result.Matches;
 
 		Assert.Single(matches);

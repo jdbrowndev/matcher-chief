@@ -39,7 +39,7 @@ public class AsyncConcurrentQueue<T>
 		}
 	}
 
-	public async Task<T> DequeueAsync(CancellationToken cancellationToken = default(CancellationToken))
+	public async Task<T> DequeueAsync(CancellationToken cancellationToken = default)
 	{
 		while (true)
 		{

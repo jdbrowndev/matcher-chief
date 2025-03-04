@@ -21,10 +21,10 @@ public class MatcherChiefClientTests
 	{
 		var request = new MatchRequestModel
 		{
-			Players = new PlayerModel[0],
+			Players = [],
 			GameFormat = GameFormat.OneVersusOne,
-			GameTitles = new[] { GameTitle.HaloReach },
-			GameModes = new[] { GameMode.Slayer }
+			GameTitles = [GameTitle.HaloReach],
+			GameModes = [GameMode.Slayer]
 		};
 
 		await Assert.ThrowsAsync<ArgumentException>(() => _sut.GetMatch(request, CancellationToken.None));
@@ -39,10 +39,10 @@ public class MatcherChiefClientTests
 
 		var request = new MatchRequestModel
 		{
-			Players = new[] { player1, player2, player3 },
+			Players = [player1, player2, player3],
 			GameFormat = GameFormat.OneVersusOne,
-			GameTitles = new[] { GameTitle.HaloReach },
-			GameModes = new[] { GameMode.Slayer }
+			GameTitles = [GameTitle.HaloReach],
+			GameModes = [GameMode.Slayer]
 		};
 
 		await Assert.ThrowsAsync<ArgumentException>(() => _sut.GetMatch(request, CancellationToken.None));
@@ -56,10 +56,10 @@ public class MatcherChiefClientTests
 
 		var request = new MatchRequestModel
 		{
-			Players = new[] { player1, player2 },
+			Players = [player1, player2],
 			GameFormat = GameFormat.OneVersusOne,
-			GameTitles = new[] { GameTitle.HaloReach },
-			GameModes = new[] { GameMode.Slayer }
+			GameTitles = [GameTitle.HaloReach],
+			GameModes = [GameMode.Slayer]
 		};
 
 		await Assert.ThrowsAsync<ArgumentException>(() => _sut.GetMatch(request, CancellationToken.None));
@@ -73,10 +73,10 @@ public class MatcherChiefClientTests
 
 		var request = new MatchRequestModel
 		{
-			Players = new[] { player1, player2 },
+			Players = [player1, player2],
 			GameFormat = GameFormat.OneVersusOne,
-			GameTitles = new[] { GameTitle.HaloReach },
-			GameModes = new[] { GameMode.Slayer }
+			GameTitles = [GameTitle.HaloReach],
+			GameModes = [GameMode.Slayer]
 		};
 
 		await Assert.ThrowsAsync<ArgumentException>(() => _sut.GetMatch(request, CancellationToken.None));
@@ -90,10 +90,10 @@ public class MatcherChiefClientTests
 
 		var request = new MatchRequestModel
 		{
-			Players = new[] { player1, player2 },
+			Players = [player1, player2],
 			GameFormat = GameFormat.OneVersusOne,
-			GameTitles = new GameTitle[0],
-			GameModes = new[] { GameMode.Slayer }
+			GameTitles = [],
+			GameModes = [GameMode.Slayer]
 		};
 
 		await Assert.ThrowsAsync<ArgumentException>(() => _sut.GetMatch(request, CancellationToken.None));
@@ -107,10 +107,10 @@ public class MatcherChiefClientTests
 
 		var request = new MatchRequestModel
 		{
-			Players = new[] { player1, player2 },
+			Players = [player1, player2],
 			GameFormat = GameFormat.OneVersusOne,
-			GameTitles = new[] { GameTitle.HaloReach },
-			GameModes = new GameMode[0]
+			GameTitles = [GameTitle.HaloReach],
+			GameModes = []
 		};
 
 		await Assert.ThrowsAsync<ArgumentException>(() => _sut.GetMatch(request, CancellationToken.None));
@@ -124,10 +124,10 @@ public class MatcherChiefClientTests
 
 		var request = new MatchRequestModel
 		{
-			Players = new[] { player1, player2 },
+			Players = [player1, player2],
 			GameFormat = GameFormat.FourPlayerFirefight,
-			GameTitles = new[] { GameTitle.HaloCE },
-			GameModes = new[] { GameMode.FirefightArcade }
+			GameTitles = [GameTitle.HaloCE],
+			GameModes = [GameMode.FirefightArcade]
 		};
 
 		await Assert.ThrowsAsync<ArgumentException>(() => _sut.GetMatch(request, CancellationToken.None));
@@ -141,10 +141,10 @@ public class MatcherChiefClientTests
 
 		var request = new MatchRequestModel
 		{
-			Players = new[] { player1, player2 },
+			Players = [player1, player2],
 			GameFormat = GameFormat.OneVersusOne,
-			GameTitles = new[] { GameTitle.HaloReach },
-			GameModes = new[] { GameMode.FirefightArcade }
+			GameTitles = [GameTitle.HaloReach],
+			GameModes = [GameMode.FirefightArcade]
 		};
 
 		await Assert.ThrowsAsync<ArgumentException>(() => _sut.GetMatch(request, CancellationToken.None));

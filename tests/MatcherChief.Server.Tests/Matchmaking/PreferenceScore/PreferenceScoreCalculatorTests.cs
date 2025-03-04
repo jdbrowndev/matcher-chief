@@ -24,11 +24,11 @@ public class PreferenceScoreCalculatorTests
 		var player2 = new[] { new Player("sue") };
 		var player3 = new[] { new Player("jerry") };
 
-		var request1 = new MatchRequest(player1, new[] { GameTitle.HaloReach }, new[] { GameMode.Slayer, GameMode.Swat }, now);
-		var request2 = new MatchRequest(player2, new[] { GameTitle.HaloReach, GameTitle.Halo2 }, new[] { GameMode.Slayer, GameMode.Snipers }, now);
-		var request3 = new MatchRequest(player3, new[] { GameTitle.HaloReach }, new[] { GameMode.AssetDenial, GameMode.ActionSack }, now);
+		var request1 = new MatchRequest(player1, [GameTitle.HaloReach], [GameMode.Slayer, GameMode.Swat], now);
+		var request2 = new MatchRequest(player2, [GameTitle.HaloReach, GameTitle.Halo2], [GameMode.Slayer, GameMode.Snipers], now);
+		var request3 = new MatchRequest(player3, [GameTitle.HaloReach], [GameMode.AssetDenial, GameMode.ActionSack], now);
 
-		var scores = _sut.GetScores(new[] { request1, request2, request3 });
+		var scores = _sut.GetScores([request1, request2, request3]);
 
 		Assert.Equal(7, scores.Count);
 		Assert.Equal(2, scores[new Preference(GameTitle.HaloReach, GameMode.Slayer)]);
@@ -50,15 +50,15 @@ public class PreferenceScoreCalculatorTests
 		var player3 = new[] { new Player("jerry") };
 
 		var request1QueuedOn = now - TimeSpan.FromSeconds(2.75);
-		var request1 = new MatchRequest(player1, new[] { GameTitle.HaloReach }, new[] { GameMode.Slayer, GameMode.Swat }, request1QueuedOn);
+		var request1 = new MatchRequest(player1, [GameTitle.HaloReach], [GameMode.Slayer, GameMode.Swat], request1QueuedOn);
 
 		var request2QueuedOn = now - TimeSpan.FromSeconds(6);
-		var request2 = new MatchRequest(player2, new[] { GameTitle.HaloReach, GameTitle.Halo2 }, new[] { GameMode.Slayer, GameMode.Snipers }, request2QueuedOn);
+		var request2 = new MatchRequest(player2, [GameTitle.HaloReach, GameTitle.Halo2], [GameMode.Slayer, GameMode.Snipers], request2QueuedOn);
 
 		var request3QueuedOn = now - TimeSpan.FromSeconds(14);
-		var request3 = new MatchRequest(player3, new[] { GameTitle.HaloReach }, new[] { GameMode.AssetDenial, GameMode.ActionSack }, request3QueuedOn);
+		var request3 = new MatchRequest(player3, [GameTitle.HaloReach], [GameMode.AssetDenial, GameMode.ActionSack], request3QueuedOn);
 
-		var scores = _sut.GetScores(new[] { request1, request2, request3 });
+		var scores = _sut.GetScores([request1, request2, request3]);
 
 		Assert.Equal(7, scores.Count);
 		Assert.Equal(3, scores[new Preference(GameTitle.HaloReach, GameMode.Slayer)]);

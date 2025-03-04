@@ -43,8 +43,7 @@ public class SystemController : Controller
 					MatchCount = listener.MatchCount
 				};
 			})
-			.Concat(new[]
-			{
+			.Concat([
 				new SystemQueueStatusModel
 				{
 					Name = "Outbound",
@@ -58,7 +57,7 @@ public class SystemController : Controller
 					},
 					MatchCount = 0
 				}
-			})
+			])
 			.ToList();
 
 		var model = new SystemStatusModel
@@ -67,6 +66,7 @@ public class SystemController : Controller
 			TotalMatches = queues.Sum(x => x.MatchCount),
 			Queues = queues
 		};
+
 		return model;
 	}
 }
