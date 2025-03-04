@@ -3,7 +3,7 @@
 This C# solution uses ASP.NET Core and Web Sockets to emulate a Halo matchmaking server and client. It is 100% fan-inspired and does not interface with a real Halo client in any way. It instead serves as a study on video game matchmaking algorithms.
 
 Solution projects:
- - `MatcherChief.Server` - The matchmaking server; must run as a .NET 6 application
+ - `MatcherChief.Server` - The matchmaking server; must run as a .NET application
  - `MatcherChief.Client` - A .NET standard 2.0 library for connecting to the server
  - `MatcherChief.Shared` - A .NET standard 2.0 library used to share code between the client and server
 
